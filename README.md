@@ -6,14 +6,16 @@ production, RFQ/tender, bin card tracking, and reporting, all in one
 dashboard. All data is fictional demo data; nothing here connects to a real
 backend, bank, or ERP.
 
-Three versions ship in this repo, each a **complete, standalone HTML file**
-with no build step and no dependencies — just open it in a browser.
+Several standalone dashboards ship in this repo, each a **complete,
+single HTML file** with no build step and no dependencies — just open it in a
+browser.
 
 | File | Description |
 |---|---|
-| [`index.html`](index.html) | The original dashboard design (dark sidebar, teal accent). |
+| [`index.html`](index.html) | The original owner dashboard design (dark sidebar, teal accent). |
 | [`index1.html`](index1.html) | A colorful variant — every card/tile gets a distinct accent color, using an accessibility-validated categorical palette. |
 | [`index2.html`](index2.html) | A modern admin-template redesign (purple accent, hero widgets, sparkline/donut/ring charts, pagination) modeled after the reference dashboards in [`docs/`](docs). |
+| [`gm_lead_management_system-1.html`](gm_lead_management_system-1.html) | A separate lead-management app for GM's sales team — leads, sales pipeline, inbox, team performance, GM Traders B2B factory accounts, follow-ups, reports, analytics, orders, delivery calendar, quotations, design approvals, and payments. |
 
 ## Screenshots
 
@@ -28,6 +30,10 @@ with no build step and no dependencies — just open it in a browser.
 **`index2.html`** — modern redesign with hero widgets and pagination
 
 ![index2.html screenshot](docs/screenshot-modern.png)
+
+**`gm_lead_management_system-1.html`** — lead management dashboard
+
+![Lead management dashboard screenshot](docs/screenshot-lead-management.png)
 
 ## Features
 
