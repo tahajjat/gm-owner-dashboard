@@ -93,6 +93,9 @@ npx serve .
 - [`docs/dashboard-sample-01.png`](docs/dashboard-sample-01.png) through
   `dashboard-sample-06.png` — the reference admin-dashboard screenshots that
   `index2.html`'s visual design was modeled after.
+- [`Lead-Management-System-Plan.pdf`](Lead-Management-System-Plan.pdf) —
+  implementation plan, data model, API plan, delivery roadmap and operating
+  guide behind `gm_lead_management_system-1.html`.
 
 ## Known limitations
 
