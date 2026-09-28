@@ -1,0 +1,1462 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GM Lead Manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0..1,0" rel="stylesheet">
+<style>
+:root,[data-theme="light"]{
+  --bg:#f4f6fb;--side:#0f1b3d;--card:#ffffff;--card2:#f6f8fc;--line:#e6e9f2;--text:#141a33;--muted:#6b7390;
+  --accent:#1f6bf2;--accent-ink:#ffffff;--accent-soft:rgba(31,107,242,.09);
+  --green:#16a34a;--green-soft:rgba(22,163,74,.10);--amber:#d97706;--amber-soft:rgba(245,158,11,.13);
+  --red:#e0383e;--red-soft:rgba(224,56,62,.09);--blue:#1f6bf2;--blue-soft:rgba(31,107,242,.09);
+  --purple:#7c4ddb;--purple-soft:rgba(124,77,219,.10);--teal:#14b8a6;--slate:#475569;
+  --input:#ffffff;--shadow:0 1px 3px rgba(20,30,70,.06);
+}
+[data-theme="dark"]{
+  --bg:#0c1224;--side:#0a1330;--card:#141b31;--card2:#1a223b;--line:#262f4c;--text:#e7eaf3;--muted:#8d94ad;
+  --accent:#4d8bff;--accent-ink:#ffffff;--accent-soft:rgba(77,139,255,.14);
+  --green:#4ade80;--green-soft:rgba(74,222,128,.13);--amber:#fbbf24;--amber-soft:rgba(251,191,36,.13);
+  --red:#f87171;--red-soft:rgba(248,113,113,.13);--blue:#60a5fa;--blue-soft:rgba(96,165,250,.13);
+  --purple:#a78bfa;--purple-soft:rgba(167,139,250,.14);--teal:#2dd4bf;--slate:#94a3b8;
+  --input:#0f1528;--shadow:none;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;font-size:14px}
+button,input,select,textarea{font:inherit;color:inherit}
+.ms{font-family:'Material Symbols Outlined';font-size:19px;line-height:1;vertical-align:middle;font-weight:normal;font-style:normal;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;direction:ltr;-webkit-font-smoothing:antialiased}
+.app{display:flex;min-height:100vh}
+/* sidebar */
+aside{width:224px;flex:none;background:var(--side);color:#dfe5f7;padding:16px 12px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.brand{display:flex;gap:11px;align-items:center;padding:4px 4px 20px}
+.logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#3b82f6,#22c1ee);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px}
+.brand b{display:block;font-size:17px;color:#fff;letter-spacing:-.01em}.brand small{color:#9fb0d8;font-size:11.5px}
+.navlbl{font-size:10.5px;letter-spacing:.08em;color:#7f8fb8;padding:14px 12px 6px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.nav{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:9px;cursor:pointer;color:#dfe5f7;background:none;border:0;width:100%;text-align:left;font-size:14px;margin-bottom:2px}
+.nav .ms{font-size:21px}
+.nav:hover{background:rgba(255,255,255,.06)}
+.nav.active{background:#1f6bf2;color:#fff;font-weight:600}
+.nav .cnt{margin-left:auto;background:#e0383e;color:#fff;font-size:11px;border-radius:10px;padding:1px 7px;font-weight:600}
+.newtag{background:rgba(74,222,128,.18);color:#4ade80;border-radius:5px;padding:1px 6px;font-size:9.5px;letter-spacing:.05em}
+.sidefoot{margin-top:auto;padding-top:16px}
+.promo{border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);border-radius:12px;padding:14px;font-size:12.5px;line-height:1.5;color:#dfe5f7;margin-bottom:10px}
+.promo .ms{font-size:26px;color:#9fc0ff;margin-bottom:6px}
+aside .btn{color:#dfe5f7;border-color:rgba(255,255,255,.14);background:transparent}
+/* dashboard */
+.search{flex:1;max-width:480px;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px;color:var(--muted)}
+.search input{border:0;outline:0;background:transparent;width:100%}
+.user{display:flex;align-items:center;gap:10px}.user b{display:block;font-size:13.5px}.user small{color:var(--muted);font-size:11.5px}
+.user .av{width:36px;height:36px;background:var(--accent);color:#fff;border:0}
+.bell{position:relative}.bell i{position:absolute;top:-4px;right:-4px;background:#e0383e;color:#fff;font-size:10px;font-style:normal;border-radius:9px;padding:0 5px;font-weight:700}
+.pagehead{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.pagehead h2{margin:0;font-size:22px;letter-spacing:-.01em}.pagehead p{margin:4px 0 0;color:var(--muted)}
+.k6{grid-template-columns:repeat(6,1fr)}
+.kc{border-radius:12px;padding:16px;display:flex;gap:12px;border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow)}
+.kc .ic{width:44px;height:44px;border-radius:11px;display:grid;place-items:center;color:#fff;flex:none}
+.kc .ic .ms{font-size:24px}
+.kc .l{font-size:13px;font-weight:600}.kc .v{font-size:24px;font-weight:800;margin:4px 0 2px;display:flex;align-items:baseline;gap:8px}
+.kc .v small{font-size:11.5px;font-weight:600}.kc .s{font-size:11.5px;color:var(--muted)}
+.up{color:var(--green)}.down{color:var(--red)}
+.d3{grid-template-columns:1.25fr 1fr .8fr}
+.d33{grid-template-columns:1.2fr 1fr 1fr}
+@media (min-width:1301px){ .d33.wide1{grid-template-columns:1.75fr .95fr 1.3fr} }
+.chead{display:flex;align-items:center;gap:8px;margin-bottom:12px}.chead h3{margin:0}
+.chead .va{margin-left:auto;color:var(--accent);font-size:12px;font-weight:600;cursor:pointer;background:none;border:0}
+.card.t{padding:0}.card.t .chead{padding:14px 16px 0}
+.card.t table td,.card.t table th{padding:9px 12px;font-size:12.5px}
+.card.t th{text-transform:none;letter-spacing:0;font-size:11.5px;background:var(--card2)}
+.funnel{display:flex;align-items:flex-end;gap:12px;height:190px;padding-top:10px}
+.funnel .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;height:100%}
+.funnel .col b{font-size:15px}.funnel .col small{font-size:11px;color:var(--muted);margin-bottom:6px}
+.funnel .col i{display:block;width:100%;border-radius:4px 4px 0 0}
+.conv{display:flex;justify-content:space-around;margin-top:12px;font-size:12px;font-weight:600;color:var(--muted)}
+.donut{display:flex;gap:16px;align-items:center}
+.legend{flex:1;font-size:13px}.legend div{display:flex;align-items:center;gap:8px;padding:5px 0}
+.legend i{width:10px;height:10px;border-radius:50%;flex:none}.legend span{flex:1}.legend em{font-style:normal;color:var(--muted);font-size:12px;width:42px;text-align:right}
+.qa{display:flex;gap:12px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:11px 12px;margin-bottom:9px;cursor:pointer;background:var(--card)}
+.qa:hover{border-color:var(--accent)}
+.qa .ic{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;color:#fff;flex:none}
+.qa b{display:block;font-size:13px}.qa small{color:var(--muted);font-size:11.5px}
+.score{display:inline-block;background:var(--green-soft);color:var(--green);font-weight:700;border-radius:6px;padding:2px 7px;font-size:12px}
+.act div.a{display:flex;gap:10px;padding:7px 0;font-size:12.5px}.act .av{width:26px;height:26px;font-size:10px}
+.sav{width:26px;height:26px;border-radius:50%;display:inline-grid;place-items:center;color:#fff;font-size:11px;font-weight:700;flex:none}
+.sw{position:relative;width:38px;height:22px;flex:none;display:inline-block}
+.sw input{opacity:0;width:0;height:0}
+.sw span{position:absolute;inset:0;background:var(--line);border-radius:22px;cursor:pointer;transition:.2s}
+.sw span:before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.sw input:checked+span{background:var(--accent)}.sw input:checked+span:before{transform:translateX(16px)}
+.row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row{flex-wrap:wrap}.row>div{min-width:0}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--card)}
+.seg button{border:0;background:none;padding:7px 12px;cursor:pointer;font-size:12.5px;color:var(--muted)}
+.seg button.on{background:var(--accent);color:#fff}
+.tcard{text-align:center}.tcard .av{width:54px;height:54px;font-size:18px;color:#fff;border:0;margin-bottom:8px}
+.stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:12px 0;text-align:center}
+.stats3 div{background:var(--card2);border-radius:8px;padding:7px 4px}.stats3 b{display:block;font-size:15px}.stats3 small{font-size:10.5px;color:var(--muted)}
+.hbar{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:12.5px}
+.hbar>span:first-child{width:120px;flex:none}.hbar .track{flex:1;height:10px;background:var(--card2);border-radius:6px;position:relative}
+.hbar .track i{position:absolute;left:0;top:0;bottom:0;border-radius:6px}
+.hbar>b{width:74px;text-align:right;flex:none}
+.fu{display:flex;gap:12px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.fu:last-child{border-bottom:0}.fu .ic{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;flex:none}
+.set-nav{display:flex;flex-direction:column;gap:2px}
+.set-nav button{border:0;background:none;text-align:left;padding:9px 12px;border-radius:8px;cursor:pointer;display:flex;gap:10px;align-items:center;color:var(--text)}
+.set-nav button.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.two-s{display:grid;grid-template-columns:220px 1fr;gap:14px;align-items:start}
+.two-s>*{min-width:0}
+.rulef{grid-template-columns:1fr 1fr 1fr auto}
+@media (max-width:760px){.rulef{grid-template-columns:1fr}}
+@media (max-width:760px){.two-s{grid-template-columns:1fr}.hbar>span:first-child{width:84px}}
+/* main */
+main{flex:1;min-width:0}
+.top{display:flex;align-items:center;gap:12px;padding:14px 24px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+.top h1{font-size:20px;margin:0;font-weight:700}
+.demo{background:var(--amber-soft);color:var(--amber);font-size:10.5px;font-weight:700;border-radius:5px;padding:2px 7px;letter-spacing:.05em}
+.spacer{flex:1}
+.menu-btn{display:none}
+.wrap{padding:20px 24px 60px;max-width:1440px}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--card2);padding:8px 13px;border-radius:9px;cursor:pointer;font-weight:500;font-size:13px;white-space:nowrap}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.btn.green{background:var(--green);color:#06260f;border-color:var(--green);font-weight:600}
+.btn.ghost{background:none}
+.btn.sm{padding:5px 9px;font-size:12px}
+.btn:disabled{opacity:.45;cursor:not-allowed;border-color:var(--line)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.card h3{margin:0 0 12px;font-size:15px;display:flex;align-items:center;gap:8px}
+.muted{color:var(--muted)}.small{font-size:12px}
+.grid{display:grid;gap:14px}
+.grid>*{min-width:0}
+.kpis{grid-template-columns:repeat(4,1fr)}
+.kpi .l{color:var(--muted);font-size:12.5px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.kpi{overflow:hidden}
+.kpi .v{font-size:26px;font-weight:700;margin:6px 0 2px}
+.pill{display:inline-flex;align-items:center;gap:4px;border-radius:20px;padding:2px 9px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.p-green{background:var(--green-soft);color:var(--green)}.p-amber{background:var(--amber-soft);color:var(--amber)}
+.p-red{background:var(--red-soft);color:var(--red)}.p-blue{background:var(--blue-soft);color:var(--blue)}
+.p-grey{background:var(--card2);color:var(--muted);border:1px solid var(--line)}.p-acc{background:var(--accent-soft);color:var(--accent)}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:11px;letter-spacing:.06em;color:var(--muted);font-weight:600;padding:9px 10px;border-bottom:1px solid var(--line);text-transform:uppercase;white-space:nowrap}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr.click{cursor:pointer}tr.click:hover td{background:var(--card2)}
+.tablewrap{overflow-x:auto}
+.av{width:30px;height:30px;border-radius:50%;background:var(--card2);border:1px solid var(--line);display:inline-grid;place-items:center;font-size:11px;font-weight:700;color:var(--muted);flex:none}
+.who{display:flex;gap:10px;align-items:center}.who b{display:block;font-size:13.5px}.who small{color:var(--muted);font-size:12px}
+.bar{height:7px;border-radius:5px;background:var(--card2);border:1px solid var(--line);overflow:hidden;position:relative}
+.bar i{display:block;height:100%;background:var(--green);border-radius:5px}
+.checks{display:flex;gap:4px}
+.chk{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font-size:15px}
+.chk.ok{background:var(--green-soft);color:var(--green)}.chk.no{background:var(--card2);color:var(--muted);border:1px solid var(--line)}
+/* workspace */
+.ws-head{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:14px}
+.ws-head .av{width:44px;height:44px;font-size:14px}
+.ws-head h2{margin:0;font-size:20px}
+.ready{display:grid;grid-template-columns:repeat(4,1fr) auto;gap:10px;align-items:center;margin-bottom:14px}
+.rstep{display:flex;gap:9px;align-items:center;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);cursor:pointer}
+.rstep .ms{font-size:20px}
+.rstep.ok{border-color:rgba(74,222,128,.35)}.rstep.ok .ms{color:var(--green)}
+.rstep.no .ms{color:var(--muted)}
+.rstep b{font-size:12.5px;display:block}.rstep small{font-size:11.5px;color:var(--muted)}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:16px;overflow-x:auto}
+.tab{padding:10px 14px;border:0;background:none;cursor:pointer;color:var(--muted);font-weight:500;border-bottom:2px solid transparent;display:flex;gap:6px;align-items:center;white-space:nowrap}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.two{display:grid;grid-template-columns:1.25fr 1fr;gap:14px;align-items:start}
+.two>*{min-width:0}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.f label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500}
+.f input,.f select,.f textarea,.in{width:100%;background:var(--input);border:1px solid var(--line);border-radius:8px;padding:8px 10px;outline:none}
+.f input:focus,.f select:focus,.f textarea:focus,.in:focus{border-color:var(--accent)}
+.full{grid-column:1/-1}
+.sizes{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.sizes .f input{text-align:center;font-weight:600}
+.warn{display:flex;gap:8px;align-items:flex-start;padding:9px 11px;border-radius:9px;font-size:12.5px;margin-top:10px}
+.warn.red{background:var(--red-soft);color:var(--red)}.warn.amber{background:var(--amber-soft);color:var(--amber)}.warn.green{background:var(--green-soft);color:var(--green)}
+.cellin{background:transparent;border:1px solid transparent;border-radius:6px;padding:5px 7px;width:100%;outline:none}
+.cellin:hover{border-color:var(--line)}.cellin:focus{border-color:var(--accent);background:var(--input)}
+.iconbtn{background:none;border:0;cursor:pointer;color:var(--muted);padding:4px;border-radius:6px}
+.iconbtn:hover{color:var(--red);background:var(--red-soft)}
+.dl{display:flex;gap:18px;align-items:center}
+.ring{width:84px;height:84px;border-radius:50%;display:grid;place-items:center;text-align:center;flex:none}
+.ring b{font-size:24px;display:block;line-height:1}.ring small{font-size:10.5px}
+/* paper */
+.paper{background:#fff;color:#1b1f2e;border-radius:10px;padding:26px;font-size:12.5px;box-shadow:0 8px 30px rgba(0,0,0,.25)}
+.paper .ph{display:flex;justify-content:space-between;border-bottom:2px solid #5b45e0;padding-bottom:12px;margin-bottom:14px}
+.paper h4{margin:0;font-size:18px;color:#5b45e0}
+.paper table th{color:#687089;border-color:#e3e6ef;font-size:10px;padding:6px}
+.paper table td{border-color:#eef0f5;padding:7px 6px}
+.paper .tot td{border:0;padding:3px 6px}
+.paper .grand td{font-weight:800;font-size:14px;border-top:2px solid #1b1f2e;padding-top:7px}
+.r{text-align:right}
+.timeline{display:flex;gap:0;align-items:center;margin:4px 0 14px;flex-wrap:wrap}
+.tl{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.tl .dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:12px}
+.tl.done{color:var(--text)}.tl.done .dot{background:var(--green);border-color:var(--green);color:#06260f}
+.tl.cur .dot{border-color:var(--accent);color:var(--accent)}
+.tl-line{width:28px;height:2px;background:var(--line);margin:0 6px}
+.mockups{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.mock{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card)}
+.mock .img{background:var(--card2);aspect-ratio:1/1;display:grid;place-items:center;padding:14px}
+.mock .img svg,.mock .img img{width:100%;height:100%;object-fit:contain}
+.mock .b{padding:11px 12px}
+.pay-cards{grid-template-columns:repeat(4,1fr)}
+.bigbar{height:14px;border-radius:8px;background:var(--card2);border:1px solid var(--line);position:relative;overflow:visible;margin:22px 0 8px}
+.bigbar i{position:absolute;left:0;top:0;bottom:0;background:var(--green);border-radius:8px}
+.bigbar .mark{position:absolute;top:-20px;transform:translateX(-50%);font-size:10.5px;color:var(--amber);white-space:nowrap}
+.bigbar .mark:after{content:'';position:absolute;left:50%;top:16px;width:2px;height:22px;background:var(--amber)}
+.hist{border-left:2px solid var(--line);margin-left:6px;padding-left:14px}
+.hist div{position:relative;padding:0 0 12px;font-size:12.5px}
+.hist div:before{content:'';position:absolute;left:-20px;top:4px;width:10px;height:10px;border-radius:50%;background:var(--accent)}
+/* calendar */
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal .dh{font-size:11px;color:var(--muted);text-align:center;padding:4px;font-weight:600}
+.day{min-height:96px;border:1px solid var(--line);border-radius:9px;padding:6px;background:var(--card)}
+.day.today{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.day.past{opacity:.5}
+.day .n{font-size:11.5px;color:var(--muted);margin-bottom:4px}
+.ev{font-size:11px;border-radius:6px;padding:3px 6px;margin-bottom:3px;cursor:pointer;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* modal & toast */
+.overlay{position:fixed;inset:0;background:rgba(5,8,18,.6);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+.overlay.open{display:flex}
+.modal{background:var(--card);border:1px solid var(--line);border-radius:14px;width:min(540px,100%);max-height:92vh;overflow:auto;padding:20px}
+.modal h3{margin:0 0 14px;display:flex;justify-content:space-between;align-items:center;font-size:16px}
+.phone{width:300px;max-width:100%;margin:0 auto;border:8px solid #0b0d16;border-radius:30px;background:#f3f4f8;color:#1b1f2e;overflow:hidden}
+.phone .bar2{background:#5b45e0;color:#fff;padding:14px;font-size:13px}
+.phone .content{padding:14px}
+.phone textarea{width:100%;border:1px solid #d8dbe6;border-radius:8px;padding:8px;background:#fff;color:#1b1f2e}
+.wa{background:#e7ffdb;color:#111;border-radius:10px;padding:12px;white-space:pre-wrap;font-size:13px;border:1px solid #c8eab4}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;font-size:13px;transition:.25s;z-index:60;opacity:0}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+#printArea{display:none}
+@media print{
+  body>*:not(#printArea){display:none!important}
+  #printArea{display:block!important}
+  body{background:#fff}
+  .paper{box-shadow:none;border-radius:0}
+}
+@media (max-width:1300px){ .k6{grid-template-columns:repeat(3,1fr)} .d3,.d33{grid-template-columns:1fr 1fr} .d3>:first-child,.d33>:first-child{grid-column:1/-1} }
+@media (max-width:1000px){
+  .kpis,.pay-cards{grid-template-columns:repeat(2,1fr)}
+  .k6{grid-template-columns:repeat(2,1fr)} .d3,.d33{grid-template-columns:1fr}
+  .top .user div{display:none}
+  .two{grid-template-columns:1fr}
+  .ready{grid-template-columns:1fr 1fr}
+  .ready .btn{grid-column:1/-1;justify-content:center}
+}
+@media (max-width:760px){
+  aside{position:fixed;left:-230px;z-index:40;transition:.2s;box-shadow:0 0 40px rgba(0,0,0,.4)}
+  aside.open{left:0}
+  .menu-btn{display:inline-flex}
+  .top{padding:12px 16px}.wrap{padding:16px}
+  .form{grid-template-columns:1fr}
+  .sizes{grid-template-columns:repeat(3,1fr)}
+  .cal{grid-template-columns:repeat(7,minmax(0,1fr));gap:3px}
+  .day{min-height:70px;padding:3px}.ev{font-size:9.5px;padding:2px 3px}
+  .top .hide-m{display:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside id="side">
+    <div class="brand"><div class="logo">GM</div><div><b>LeadManager</b><small>Turn Leads into Customers</small></div></div>
+    <div id="mainnav"></div>
+    <div class="navlbl">Orders <span class="newtag">NEW</span></div>
+    <div id="newnav"></div>
+    <div class="navlbl">GM Traders · B2B <span class="newtag">NEW</span></div>
+    <div id="b2bnav"></div>
+    <div class="sidefoot">
+      <div class="promo"><span class="ms">track_changes</span><br><b>Better Leads<br>Higher Conversions<br>Bigger Growth</b></div>
+      <div style="display:flex;gap:6px;align-items:center;justify-content:space-between"><small style="color:#7f8fb8;font-size:11px">Demo · sample data</small>
+      <button class="btn sm" id="themeBtn"><span class="ms">dark_mode</span>Theme</button></div>
+    </div>
+  </aside>
+  <main>
+    <div class="top">
+      <button class="btn sm ghost menu-btn" id="menuBtn"><span class="ms">menu</span></button>
+      <div class="search"><span class="ms">search</span><input placeholder="Search leads, company, phone…" id="searchBox"></div>
+      <span class="demo hide-m">DEMO</span>
+      <div class="spacer"></div>
+      <select class="in hide-m" id="bizFilter" style="width:auto"></select>
+      <button class="btn ghost bell" style="border:0" onclick="toast('3 new notifications')"><span class="ms">notifications</span><i>3</i></button>
+      <div class="user"><span class="av">TT</span><div><b>Tanvir Toha</b><small>Manager</small></div></div>
+    </div>
+    <h1 id="title" style="display:none"></h1>
+    <div class="wrap" id="view"></div>
+  </main>
+</div>
+<div class="overlay" id="overlay"><div class="modal" id="modal"></div></div>
+<div id="toast"></div>
+<div id="printArea"></div>
+
+<script>
+/* ---------------- helpers ---------------- */
+const TODAY = new Date('2026-09-27T00:00:00');
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const tk = n => '৳' + Math.round(n || 0).toLocaleString('en-IN');
+const D = s => new Date(s + 'T00:00:00');
+const days = s => Math.round((D(s) - TODAY) / 86400000);
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
+const fmt = s => { const d = D(s); return d.getDate() + ' ' + MON[d.getMonth()]; };
+const iso = d => d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+const initials = n => n.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+function toast(m){ const t=$('#toast'); t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),2200); }
+function openModal(html){ $('#modal').innerHTML = html; $('#overlay').classList.add('open'); }
+function closeModal(){ $('#overlay').classList.remove('open'); }
+$('#overlay').addEventListener('click', e => { if (e.target.id === 'overlay') closeModal(); });
+
+const BUSINESSES = ['GM Print Solution','GM Corporation','GM Sublimation','GM TRADERS','GM Trade International','Jersey.com.bd'];
+const STAFF = ['Rafiq','Nusrat','Tanvir','Sumaiya','Arif'];
+const PRODUCTS = ['T-shirt','Polo shirt','Football jersey','Cricket jersey','Club kit (jersey + shorts)','Hoodie','Cap + T-shirt','Hijab','Mug','Other'];
+const PRINTS = ['Sublimation','DTF','Screen print','Embroidery','Screen print + Embroidery','Heat transfer'];
+const SIZES = ['S','M','L','XL','XXL','3XL'];
+const PAY_METHODS = ['bKash','Nagad','Rocket','Bank transfer','Cash'];
+const QSTEPS = ['Draft','Sent','Viewed','Accepted'];
+
+/* ---------------- sample data ---------------- */
+const P = (list) => list.map(([name, no, size]) => ({name, no, size}));
+let orders = [
+ { id:'GM-1041', name:'Karim Uddin', company:'Karim Fashion House', phone:'01711-234567', biz:'GM Print Solution', staff:'Rafiq', hot:true,
+   product:'T-shirt', print:'Sublimation', fabric:'Polyester 160 GSM', colour:'Navy blue', qty:500,
+   sizes:{S:80,M:150,L:150,XL:90,XXL:30,'3XL':0}, players:[], deadline:'2026-10-20', address:'Bangabazar, Dhaka', note:'For Eid collection. Brand label on neck.',
+   quote:{ items:[{name:'Sublimation t-shirt, full front print',qty:500,price:320},{name:'Neck label print',qty:500,price:15}], discount:7500, vat:5, valid:7, advancePct:50, status:'Sent', sent:'2026-09-26' },
+   design:{ status:'Waiting', versions:[{v:1,color:'#1e3a8a',text:'KARIM',status:'Change requested',comment:'Logo bigger please, and lighter navy.'},{v:2,color:'#2563eb',text:'KARIM',status:'Waiting',comment:''}] },
+   payments:[], production:false,
+   history:[{d:'2026-09-26',t:'Quotation Q-1041 sent on WhatsApp',w:'Rafiq'},{d:'2026-09-26',t:'Design v2 sent for approval',w:'Rafiq'},{d:'2026-09-25',t:'Customer asked for changes on v1',w:'Customer'}] },
+ { id:'GM-1042', name:'Shirin Akter', company:'Dhaka Sports Club', phone:'01819-556677', biz:'Jersey.com.bd', staff:'Nusrat', hot:true,
+   product:'Football jersey', print:'Sublimation', fabric:'Mesh polyester', colour:'Red / white', qty:40,
+   sizes:{S:4,M:12,L:14,XL:8,XXL:2,'3XL':0},
+   players:P([['RAHIM',1,'L'],['SAKIB',2,'M'],['TAMIM',3,'L'],['MUSHFIQ',4,'M'],['RIYAD',5,'XL'],['LITON',6,'M'],['MIRAZ',7,'L'],['SHANTO',8,'M'],['TASKIN',9,'XL'],['MUSTAFIZ',10,'L'],['SHORIFUL',11,'M'],['HRIDOY',12,'S'],['JAKER',13,'L'],['NASUM',14,'M'],['RISHAD',7,'L'],['TANZID',16,'S'],['SAIF',17,'XL'],['MAHIDUL',18,'L']]),
+   deadline:'2026-10-05', address:'Mirpur, Dhaka', note:'Name on back, number front and back.',
+   quote:{ items:[{name:'Sublimation football jersey',qty:40,price:1400},{name:'Name & number print',qty:40,price:200}], discount:0, vat:5, valid:7, advancePct:50, status:'Accepted', sent:'2026-09-24' },
+   design:{ status:'Approved', versions:[{v:1,color:'#dc2626',text:'DSC',num:'10',status:'Approved',comment:'Perfect 👍'}] },
+   payments:[{d:'2026-09-25',m:'bKash',trx:'BK8H2K91QZ',a:33600}], production:false,
+   history:[{d:'2026-09-25',t:'Advance ৳33,600 received via bKash',w:'Nusrat'},{d:'2026-09-25',t:'Design v1 approved by customer',w:'Customer'},{d:'2026-09-24',t:'Quotation accepted',w:'Customer'}] },
+ { id:'GM-1043', name:'Arman Hossain', company:'Chattogram FC', phone:'01912-334455', biz:'Jersey.com.bd', staff:'Sumaiya', hot:true,
+   product:'Club kit (jersey + shorts)', print:'Sublimation', fabric:'Mesh polyester', colour:'Green / black', qty:60,
+   sizes:{S:0,M:20,L:25,XL:10,XXL:5,'3XL':0}, players:[], deadline:'2026-10-02', address:'Agrabad, Chattogram', note:'Home + away, 30 sets each.',
+   quote:{ items:[{name:'Home kit (jersey + shorts)',qty:30,price:2500},{name:'Away kit (jersey + shorts)',qty:30,price:2500}], discount:0, vat:5, valid:5, advancePct:50, status:'Draft', sent:null },
+   design:{ status:'Waiting', versions:[{v:1,color:'#15803d',text:'CFC',num:'9',status:'Waiting',comment:''}] },
+   payments:[], production:false, history:[{d:'2026-09-27',t:'Design v1 sent for approval',w:'Sumaiya'}] },
+ { id:'GM-1044', name:'Selina Parvin', company:'SP Corporate Gifts', phone:'01755-908070', biz:'GM Corporation', staff:'Tanvir', hot:true,
+   product:'Cap + T-shirt', print:'Screen print + Embroidery', fabric:'Cotton 180 GSM', colour:'White', qty:300,
+   sizes:{S:30,M:90,L:100,XL:60,XXL:20,'3XL':0}, players:[], deadline:'2026-10-12', address:'Banani, Dhaka', note:'Embroidered logo on cap, screen print on t-shirt.',
+   quote:{ items:[{name:'Cotton t-shirt, 1 colour screen print',qty:300,price:520},{name:'Cap with embroidered logo',qty:300,price:430}], discount:0, vat:5, valid:10, advancePct:50, status:'Viewed', sent:'2026-09-25' },
+   design:{ status:'Approved', versions:[{v:1,color:'#f1f5f9',text:'SP GIFTS',accent:'#5b45e0',status:'Approved',comment:'Approved from our side.'}] },
+   payments:[], production:false, history:[{d:'2026-09-26',t:'Customer opened quotation',w:'System'},{d:'2026-09-25',t:'Quotation sent',w:'Tanvir'}] },
+ { id:'GM-1045', name:'Sabbir Ahmed', company:'Uttara School', phone:'01670-121314', biz:'GM Print Solution', staff:'Rafiq', hot:true,
+   product:'T-shirt', print:'Screen print', fabric:'Cotton 160 GSM', colour:'Sky blue', qty:600,
+   sizes:{S:200,M:180,L:120,XL:60,XXL:0,'3XL':0}, players:[], deadline:'2026-10-01', address:'Sector 7, Uttara', note:'Sports day. School logo front.',
+   quote:{ items:[{name:'Cotton t-shirt, 2 colour screen print',qty:600,price:330}], discount:18000, vat:5, valid:5, advancePct:50, status:'Draft', sent:null },
+   design:{ status:'None', versions:[] }, payments:[], production:false, history:[{d:'2026-09-25',t:'Lead contacted by email',w:'Rafiq'}] },
+ { id:'GM-1046', name:'Sharmin Nahar', company:'Nahar Events', phone:'01533-667788', biz:'GM Print Solution', staff:'Rafiq', hot:false,
+   product:'T-shirt', print:'DTF', fabric:'Cotton 180 GSM', colour:'Black', qty:250,
+   sizes:{S:30,M:80,L:80,XL:45,XXL:15,'3XL':0}, players:[], deadline:'2026-10-08', address:'Dhanmondi, Dhaka', note:'Event staff t-shirts.',
+   quote:{ items:[{name:'Cotton t-shirt, DTF front + back',qty:250,price:333.33}], discount:0, vat:5, valid:7, advancePct:50, status:'Accepted', sent:'2026-09-20' },
+   design:{ status:'Approved', versions:[{v:1,color:'#111827',text:'NAHAR',accent:'#fbbf24',status:'Approved',comment:'Looks great'}] },
+   payments:[{d:'2026-09-22',m:'Nagad',trx:'NG77120AB3',a:43750}], production:true,
+   history:[{d:'2026-09-24',t:'Sent to production',w:'Rafiq'},{d:'2026-09-22',t:'Advance ৳43,750 received via Nagad',w:'Rafiq'}] },
+ { id:'GM-1047', name:'Nasrin Sultana', company:'—', phone:'01920-445566', biz:'Jersey.com.bd', staff:'Sumaiya', hot:false,
+   product:'Football jersey', print:'Sublimation', fabric:'Mesh polyester', colour:'Green / red', qty:12,
+   sizes:{S:2,M:4,L:4,XL:2,XXL:0,'3XL':0},
+   players:P([['NASRIN',1,'M'],['RAFI',2,'L'],['SUMON',3,'L'],['TUHIN',4,'XL'],['JUI',5,'S'],['MIM',6,'S'],['ROBIN',7,'M'],['SHUVO',8,'L'],['PIAL',9,'XL'],['BADHON',10,'M'],['OPU',11,'L'],['RONY',12,'M']]),
+   deadline:'2026-09-30', address:'Mohammadpur, Dhaka', note:'Bangladesh fan jersey.',
+   quote:{ items:[{name:'Fan jersey with name & number',qty:12,price:761.9}], discount:0, vat:5, valid:7, advancePct:50, status:'Accepted', sent:'2026-09-21' },
+   design:{ status:'Approved', versions:[{v:1,color:'#006a4e',text:'BANGLADESH',accent:'#f42a41',num:'10',status:'Approved',comment:''}] },
+   payments:[{d:'2026-09-21',m:'bKash',trx:'BK1X9P0QL2',a:9600}], production:true, history:[{d:'2026-09-23',t:'Sent to production',w:'Sumaiya'}] },
+];
+
+/* ---------------- calculations ---------------- */
+const isTeam = o => /jersey|kit/i.test(o.product);
+const sizeTotal = o => SIZES.reduce((a,s)=>a+(+o.sizes[s]||0),0);
+function qTotals(o){
+  const q=o.quote, sub=q.items.reduce((a,i)=>a+i.qty*i.price,0);
+  const after=Math.max(0,sub-(+q.discount||0)), vat=after*(+q.vat||0)/100, total=after+vat;
+  return {sub, after, vat, total, adv: total*(+q.advancePct||0)/100};
+}
+const paid = o => o.payments.reduce((a,p)=>a+p.a,0);
+function prodDays(o){ const rate = /Screen|Embroidery/.test(o.print) ? 80 : 100; return Math.ceil(o.qty/rate)+2; }
+function risk(o){
+  const left=days(o.deadline), need=prodDays(o);
+  if (o.production && left>=0) return {cls:'green', label:'In production', left, need};
+  if (left < need) return {cls:'red', label:'At risk', left, need};
+  if (left < need+4) return {cls:'amber', label:'Tight', left, need};
+  return {cls:'green', label:'On track', left, need};
+}
+function detailsOk(o){
+  if (!o.product || !o.print || !o.qty || sizeTotal(o)!==+o.qty) return false;
+  if (isTeam(o) && o.players.length && o.players.length!==+o.qty && !/kit/i.test(o.product)) return false;
+  return true;
+}
+function checks(o){
+  const t=qTotals(o);
+  return [
+    {k:'details', ok:detailsOk(o), label:'Order details', sub: detailsOk(o)?'Complete':'Sizes/names missing'},
+    {k:'quote', ok:o.quote.status==='Accepted', label:'Quotation', sub:o.quote.status},
+    {k:'design', ok:o.design.status==='Approved', label:'Design', sub:o.design.status==='None'?'No mockup yet':o.design.status},
+    {k:'pay', ok:paid(o)>=t.adv-1, label:'Advance', sub: tk(paid(o))+' / '+tk(t.adv)},
+  ];
+}
+const dlPill = o => { const r=risk(o), l=r.left;
+  const txt = o.production ? 'In production' : l<0 ? Math.abs(l)+'d overdue' : l===0 ? 'Today' : l+' days left';
+  return `<span class="pill p-${r.cls}"><span class="ms" style="font-size:14px">local_shipping</span>${txt}</span>`; };
+const qPill = s => `<span class="pill ${({Draft:'p-grey',Sent:'p-blue',Viewed:'p-acc',Accepted:'p-green',Rejected:'p-red'})[s]}">${s}</span>`;
+const dPill = s => `<span class="pill ${({None:'p-grey',Waiting:'p-amber','Change requested':'p-red',Approved:'p-green'})[s]}">${s==='Waiting'?'Waiting approval':s==='None'?'No design':s}</span>`;
+const hist = (o,t,w='You') => o.history.unshift({d:iso(TODAY),t,w});
+
+/* ---------------- shirt mockup ---------------- */
+function shirt(v){
+  const acc = v.accent || '#ffffff';
+  return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+   <path d="M62 28 L86 18 Q100 32 114 18 L138 28 L176 58 L156 86 L140 76 L140 182 L60 182 L60 76 L44 86 L24 58 Z" fill="${v.color}" stroke="rgba(0,0,0,.28)" stroke-width="2" stroke-linejoin="round"/>
+   <path d="M86 18 Q100 40 114 18" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="3"/>
+   <text x="100" y="${v.num?92:112}" text-anchor="middle" font-family="Inter,Arial" font-weight="800" font-size="${String(v.text).length>7?15:20}" fill="${acc}">${esc(v.text)}</text>
+   ${v.num?`<text x="100" y="140" text-anchor="middle" font-family="Inter,Arial" font-weight="800" font-size="38" fill="${acc}" opacity=".9">${esc(v.num)}</text>`:''}
+  </svg>`;
+}
+const mockImg = v => v.img ? `<img src="${v.img}" alt="Design version ${v.v}">` : shirt(v);
+
+/* ---------------- state / nav ---------------- */
+let S = { view:'dashboard', id:null, tab:'details', biz:'all' };
+const MAINNAV = [
+  {k:'dashboard', i:'dashboard', t:'Dashboard'},
+  {k:'leads', i:'group', t:'Leads'},
+  {k:'pipeline', i:'view_kanban', t:'Sales pipeline'},
+  {k:'inbox', i:'forum', t:'Messages'},
+  {k:'team', i:'groups', t:'Team'},
+  {k:'follow', i:'event_available', t:'Follow-ups'},
+  {k:'reports', i:'lab_profile', t:'Reports'},
+  {k:'analytics', i:'bar_chart', t:'Analytics'},
+  {k:'settings', i:'settings', t:'Settings'},
+];
+const NEWNAV = [
+  {k:'orders', i:'inventory_2', t:'Orders'},
+  {k:'calendar', i:'calendar_month', t:'Delivery calendar'},
+  {k:'quotes', i:'request_quote', t:'Quotations'},
+  {k:'designs', i:'palette', t:'Design approvals'},
+  {k:'payments', i:'payments', t:'Payments'},
+];
+function go(view, extra={}){ Object.assign(S,{view},extra); $('#side').classList.remove('open'); render(); window.scrollTo(0,0); }
+function list(){ return orders.filter(o => S.biz==='all' || o.biz===S.biz); }
+const byId = id => orders.find(o=>o.id===id);
+
+$('#bizFilter').innerHTML = '<option value="all">All GM businesses</option>' + BUSINESSES.map(b=>`<option>${b}</option>`).join('');
+$('#bizFilter').onchange = e => { S.biz=e.target.value; if(S.view==='order') S.view='orders'; render(); };
+document.querySelectorAll('[data-old]').forEach(b => b.onclick = () => toast('This screen is in the main Lead Manager demo'));
+$('#menuBtn').onclick = () => $('#side').classList.toggle('open');
+$('#themeBtn').onclick = () => { const h=document.documentElement; h.dataset.theme = h.dataset.theme==='dark'?'light':'dark'; };
+
+function renderNav(){
+  $('#mainnav').innerHTML = MAINNAV.map(n => `<button class="nav ${S.view===n.k?'active':''}" onclick="${n.k.startsWith('x-')?`toast('${n.t} is not part of this demo')`:`go('${n.k}')`}"><span class="ms">${n.i}</span>${n.t}</button>`).join('');
+  const waitD = list().filter(o=>o.design.status==='Waiting').length;
+  const risky = list().filter(o=>risk(o).cls==='red').length;
+  const quiet = ACCOUNTS.filter(a=>acctStatus(a).k==='quiet').length, waitS = SAMPLES.filter(x=>x.stage==='Sent').length;
+  $('#b2bnav').innerHTML = [['b2b','accounts','factory','Factory accounts',quiet],['b2b','samples','science','Sample tracker',waitS]].map(n=>`<button class="nav ${S.view==='b2b'&&(S.b2bTab||'accounts')===n[1]?'active':''}" onclick="go('b2b',{b2bTab:'${n[1]}'})"><span class="ms">${n[2]}</span>${n[3]}${n[4]?`<span class="cnt">${n[4]}</span>`:''}</button>`).join('');
+  $('#newnav').innerHTML = NEWNAV.map(n => {
+    const cnt = n.k==='designs'&&waitD ? waitD : n.k==='calendar'&&risky ? risky : 0;
+    const act = S.view===n.k || (S.view==='order'&&n.k==='orders');
+    return `<button class="nav ${act?'active':''}" onclick="go('${n.k}')"><span class="ms">${n.i}</span>${n.t}${cnt?`<span class="cnt">${cnt}</span>`:''}</button>`;
+  }).join('');
+}
+
+function render(){
+  renderNav();
+  const v = $('#view');
+  const heads = {
+    dashboard:['Lead Management Dashboard','Track, manage and convert your leads efficiently'],
+    leads:['Leads','Every lead from all GM businesses'],
+    pipeline:['Sales pipeline','Drag a card to move the lead to the next stage'],
+    inbox:['Messages','WhatsApp, Facebook, Instagram, TikTok and website messages in one inbox'],
+    team:['Team','Your sales staff, their businesses and this month\'s target'],
+    follow:['Follow-ups','Who to call, message or visit — late ones first'],
+    reports:['Reports','How leads turn into sales, and why some are lost'],
+    analytics:['Analytics','Trends, channel return and reply speed'],
+    b2b:['GM Traders · B2B','Care labels, woven labels, hang tags, heat transfer & sublimation stickers — for garment factories and buying houses'],
+    settings:['Settings','Businesses, sales stages, lead rules, message templates and alerts'],
+    orders:['Orders','From accepted price to production — details, quotation, design and advance in one place'],
+    calendar:['Delivery calendar','See every delivery date and which orders are at risk'],
+    quotes:['Quotations','Every price you sent and where it stands'],
+    designs:['Design approvals','Mockups sent to customers for approval'],
+    payments:['Payments','Advance and balance collected by bKash, Nagad, bank and cash'],
+  };
+  const h = heads[S.view];
+  const head = h ? `<div class="pagehead"><div style="flex:1;min-width:220px"><h2>${h[0]}</h2><p>${h[1]}</p></div>
+     ${S.view==='dashboard'?`<div class="btn" style="cursor:default"><span class="ms">calendar_month</span>27 Sept 2026 – 03 Oct 2026</div>`:''}
+     <button class="btn primary" onclick="addLeadModal()"><span class="ms">add</span>Add New Lead</button></div>` : '';
+  v.innerHTML = head + ({dashboard:viewDash, leads:viewLeads, pipeline:viewPipe, inbox:viewInbox, team:viewTeam, b2b:viewB2B, follow:viewFollow, reports:viewReports, analytics:viewAnalytics, settings:viewSettings, orders:viewOrders, calendar:viewCalendar, quotes:viewQuotes, designs:viewDesigns, payments:viewPayments, order:viewOrder})[S.view]();
+}
+
+/* ---------------- DASHBOARD ---------------- */
+const SRC = [['Facebook',72,'#1f6bf2'],['WhatsApp',56,'#16a34a'],['Website form',43,'#f59e0b'],['TikTok',32,'#e0383e'],['Instagram',24,'#8b5cf6'],['Phone call',14,'#14b8a6'],['Walk-in',7,'#94a3b8']];
+const ST_COL = {Visited:'p-blue','Sample sent':'p-acc','Buyer approved':'p-amber',Order:'p-green','Repeat customer':'p-green',Negotiation:'p-amber',New:'p-blue',Contacted:'p-green',Interested:'p-amber',Meeting:'p-acc','Follow-up':'p-blue','Price sent':'p-acc',Won:'p-green',Lost:'p-red'};
+const COLORS = ['#1f6bf2','#16a34a','#e0383e','#7c4ddb','#f59e0b','#14b8a6','#475569'];
+const colOf = n => COLORS[[...n].reduce((a,c)=>a+c.charCodeAt(0),0)%COLORS.length];
+const sav = n => `<span class="sav" style="background:${colOf(n)}">${n[0]}</span>`;
+const TODAYFU = [['09:30 AM','Karim Uddin','Karim Fashion House','Rafiq','Interested','call','Call'],['10:30 AM','Mahmud Hasan','Hasan Garments Ltd','Arif','Follow-up','call','Call'],['12:00 PM','Tahmina Chowdhury','Bloom Boutique','Nusrat','Meeting','event','Meeting'],['03:00 PM','Arman Hossain','Chattogram FC','Sumaiya','New','call','Call'],['04:30 PM','Liton Mia','Liton Cloth Store','Arif','Follow-up','mail','Email']];
+const HOT = [['Jahid Hossain','JH Exports','+880 1711 902233',92,'Hot'],['Karim Uddin','Karim Fashion House','+880 1711 234567',88,'Hot'],['Selina Parvin','SP Corporate Gifts','+880 1755 908070',81,'Warm'],['Shirin Akter','Dhaka Sports Club','+880 1819 556677',76,'Warm'],['Rakibul Islam','Rakib Knit Composite','+880 1911 443322',69,'Warm']];
+const OVER = [['Sabbir Ahmed','Uttara School',3,'Rafiq'],['Farzana Rahman','Office team',2,'Sumaiya'],['Selina Parvin','SP Corporate Gifts',2,'Tanvir'],['Habib Rahman','Rahman Decor',1,'Nusrat'],['Tanjil Ahmed','Gulshan Gym',1,'Sumaiya']];
+const TEAM = [['Rafiq',12,11,18,6,4,3],['Nusrat',10,9,15,5,3,2],['Tanvir',9,8,14,4,2,1],['Sumaiya',9,7,12,3,2,1],['Arif',7,6,10,2,1,1]];
+const RECENT = [['Al Amin Enterprise','Website form','New',45],['Farhana Traders','Facebook','Contacted',62],['Mega Sports BD','Instagram','Interested',78],['Royal Garments','WhatsApp','Meeting',85],['Sunrise School','TikTok','Follow-up',56]];
+const ACT = [['Sumaiya','updated Arman Hossain to <b>Interested</b>','10 mins ago'],['Rafiq','sent quotation Q-1041 — ৳1,68,000','25 mins ago'],['Nusrat','received advance ৳33,600 via bKash','1 hour ago'],['Customer','approved design for Dhaka Sports Club','2 hours ago'],['Arif','marked Mitu Das as <b>Lost</b>','3 hours ago']];
+const SOURCES = ['Facebook','WhatsApp','Website form','TikTok','Instagram','Phone call','Walk-in','YouTube','Email','LinkedIn','Referral','Factory visit','Merchandiser reference','Trade fair','Facebook group','Google','Partner'];
+const B2B_STAGES = ['New','Visited','Sample sent','Buyer approved','Order','Repeat customer','Lost'];
+const stagesFor = biz => biz==='GM TRADERS' ? B2B_STAGES : SET.stages;
+const srcIcon = s => ({LinkedIn:'work',Referral:'handshake','Factory visit':'factory','Merchandiser reference':'badge','Trade fair':'storefront','Facebook group':'groups',Google:'search',Partner:'handshake',YouTube:'smart_display',Email:'mail',Facebook:'thumb_up',WhatsApp:'chat','Website form':'language',TikTok:'music_note',Instagram:'photo_camera','Phone call':'call','Walk-in':'storefront'})[s]||'public';
+
+function viewDash(){
+  const K = [['Total Leads',248,'↑ 12%','up','vs. last week','group','#1f6bf2','rgba(31,107,242,.07)'],
+    ['New Leads',47,'↑ 18%','up','vs. last week','person_add','#16a34a','rgba(22,163,74,.07)'],
+    ["Today's Follow-up",32,'↑ 6%','up','vs. yesterday','calendar_today','#f59e0b','rgba(245,158,11,.08)'],
+    ['Overdue Follow-up',14,'↓ 30%','down','vs. last week','schedule','#e0383e','rgba(224,56,62,.07)'],
+    ['Converted',28,'↑ 21%','up','vs. last week','task_alt','#7c4ddb','rgba(124,77,219,.07)'],
+    ['Lost',19,'↓ 5%','down','vs. last week','close','#475569','rgba(71,85,105,.07)']];
+  const F = [['Total Leads',248,'#1f6bf2'],['Contacted',201,'#14b8a6'],['Interested',128,'#f59e0b'],['Price sent',76,'#8b93f8'],['Negotiation',45,'#6366f1'],['Won',28,'#16a34a']];
+  const tot = SRC.reduce((a,s)=>a+s[1],0); let off=0; const C=2*Math.PI*54;
+  const arcs = SRC.map(s=>{ const len=s[1]/tot*C; const el=`<circle r="54" cx="70" cy="70" fill="none" stroke="${s[2]}" stroke-width="26" stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 70 70)"/>`; off+=len; return el; }).join('');
+  const L=list(), advDue=L.filter(o=>!o.production).reduce((a,o)=>a+Math.max(0,qTotals(o).adv-paid(o)),0);
+  const tSum = i => TEAM.reduce((a,r)=>a+r[i],0);
+  return `
+  <div class="grid k6">${K.map(k=>`<div class="kc" style="background:linear-gradient(135deg,${k[7]},transparent 70%),var(--card)">
+     <div class="ic" style="background:${k[6]}"><span class="ms">${k[5]}</span></div>
+     <div><div class="l" style="color:${k[3]==='down'&&k[0].startsWith('Over')?'var(--red)':'var(--text)'}">${k[0]}</div><div class="v">${k[1]} <small class="${k[3]}">${k[2]}</small></div><div class="s">${k[4]}</div></div></div>`).join('')}</div>
+
+  <div class="grid d3" style="margin-top:14px">
+    <div class="card"><div class="chead"><span class="ms" style="color:var(--accent)">filter_alt</span><h3>Lead Conversion Funnel</h3><span class="pill p-grey" style="margin-left:auto">This Week</span></div>
+      <div class="funnel">${F.map(f=>`<div class="col"><b>${f[1]}</b><small>${f[0]}</small><i style="height:${Math.max(12,f[1]/248*130)}px;background:${f[2]}"></i></div>`).join('')}</div>
+      <div class="conv">${F.slice(1).map((f,i)=>`<span>${Math.round(f[1]/F[i][1]*100)}% →</span>`).join('')}</div></div>
+    <div class="card"><div class="chead"><span class="ms" style="color:var(--accent)">hub</span><h3>Lead Source</h3><span class="pill p-grey" style="margin-left:auto">This Week</span></div>
+      <div class="donut"><svg viewBox="0 0 140 140" width="150" height="150" style="flex:none">${arcs}<text x="70" y="68" text-anchor="middle" font-size="20" font-weight="800" fill="currentColor">${tot}</text><text x="70" y="84" text-anchor="middle" font-size="9" fill="currentColor" opacity=".6">Total Leads</text></svg>
+      <div class="legend">${SRC.map(s=>`<div><i style="background:${s[2]}"></i><span>${s[0]}</span><b>${s[1]}</b><em>(${Math.round(s[1]/tot*100)}%)</em></div>`).join('')}</div></div></div>
+    <div class="card"><div class="chead"><span class="ms" style="color:var(--accent)">bolt</span><h3>Quick Actions</h3></div>
+      ${[['add','#1f6bf2','Add New Lead','Manually add a new lead','addLeadModal()'],['request_quote','#7c4ddb','Create Quotation','PDF price, send on WhatsApp',"go('quotes')"],['palette','#14b8a6','Design Approvals','Mockups waiting for customer',"go('designs')"],['local_shipping','#f59e0b','Delivery Calendar','Orders at risk of being late',"go('calendar')"]]
+        .map(q=>`<div class="qa" onclick="${q[4]}"><div class="ic" style="background:${q[1]}"><span class="ms">${q[0]}</span></div><div><b>${q[2]}</b><small>${q[3]}</small></div></div>`).join('')}</div>
+  </div>
+
+  ${(()=>{const q=ACCOUNTS.filter(a=>acctStatus(a).k==='quiet'); return q.length?`<div class="warn red" style="margin-top:14px;cursor:pointer" onclick="go('b2b',{b2bTab:'accounts'})"><span class="ms">notification_important</span><div><b>${q.length} regular factory customers of GM Traders have not ordered on time:</b> ${q.map(a=>esc(a.name)).join(', ')}. Call them today →</div></div>`:''})()}
+  <div class="card" style="margin-top:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;background:linear-gradient(90deg,var(--accent-soft),transparent),var(--card)">
+    <span class="ms" style="font-size:28px;color:var(--accent)">inventory_2</span>
+    <div style="flex:1;min-width:220px"><b>Orders <span class="newtag" style="background:var(--green-soft);color:var(--green)">NEW</span></b><div class="small muted">${L.filter(o=>!o.production).length} orders being prepared · ${L.filter(o=>o.design.status==='Waiting').length} designs waiting · ${tk(advDue)} advance to collect · ${L.filter(o=>risk(o).cls==='red').length} delivery at risk</div></div>
+    <button class="btn primary" onclick="go('orders')">Open orders<span class="ms">arrow_forward</span></button>
+  </div>
+
+  <div class="grid d33 wide1" style="margin-top:14px">
+    <div class="card t"><div class="chead"><span class="ms" style="color:var(--accent)">calendar_month</span><h3>Today's Follow-ups</h3><button class="va" onclick="go('follow')">View All</button></div>
+      <div class="tablewrap"><table><thead><tr><th>Time</th><th>Customer / Company</th><th>Assigned</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody>${TODAYFU.map(r=>`<tr><td class="small">${r[0]}</td><td><div class="who">${sav(r[1])}<div><b style="font-size:12.5px">${r[1]}</b><small>${r[2]}</small></div></div></td><td>${r[3]}</td><td><span class="pill ${ST_COL[r[4]]}">${r[4]}</span></td><td><span class="ms" style="font-size:16px;color:var(--muted)">${r[5]}</span> ${r[6]}</td></tr>`).join('')}</tbody></table></div></div>
+    <div class="card t"><div class="chead"><span class="ms" style="color:var(--red)">local_fire_department</span><h3>Hot Leads</h3><button class="va" onclick="go('leads')">View All</button></div>
+      <div class="tablewrap"><table><thead><tr><th>Customer / Company</th><th>Score</th><th>Status</th></tr></thead>
+      <tbody>${HOT.map(r=>`<tr><td><div class="who">${sav(r[1])}<div><b style="font-size:12.5px">${r[1]}</b><small>${r[0]} · ${r[2]}</small></div></div></td><td><span class="score">${r[3]}</span></td><td><span class="pill ${r[4]==='Hot'?'p-red':'p-amber'}">${r[4]}</span></td></tr>`).join('')}</tbody></table></div></div>
+    <div class="card t"><div class="chead"><span class="ms" style="color:var(--red)">warning</span><h3>Overdue Follow-ups</h3><button class="va" onclick="go('follow')">View All</button></div>
+      <div class="tablewrap"><table><thead><tr><th>Customer / Company</th><th>Days Overdue</th><th>Assigned</th></tr></thead>
+      <tbody>${OVER.map(r=>`<tr><td><div class="who">${sav(r[0])}<div><b style="font-size:12.5px">${r[0]}</b><small>${r[1]}</small></div></div></td><td style="color:var(--red);font-weight:600">${r[2]} day${r[2]>1?'s':''}</td><td>${r[3]}</td></tr>`).join('')}</tbody></table></div></div>
+  </div>
+
+  <div class="card t" style="margin-top:14px"><div class="chead"><span class="ms" style="color:var(--accent)">groups</span><h3>Sales Team Performance</h3><span class="pill p-grey" style="margin-left:auto">This Week</span><button class="va" onclick="go('team')" style="margin-left:8px">View All</button></div>
+      <div class="tablewrap"><table><thead><tr><th>Executive</th><th class="r">New</th><th class="r">Contacted</th><th class="r">Follow-ups</th><th class="r">Meetings</th><th class="r">Quotes</th><th class="r">Won</th><th class="r">Conv.</th></tr></thead>
+      <tbody>${TEAM.map(r=>`<tr><td><div class="who">${sav(r[0])}${r[0]}</div></td>${r.slice(1).map(x=>`<td class="r">${x}</td>`).join('')}<td class="r"><b>${Math.round(r[6]/r[1]*100)}%</b></td></tr>`).join('')}
+      <tr><td><b>Total</b></td>${[1,2,3,4,5,6].map(i=>`<td class="r"><b>${tSum(i)}</b></td>`).join('')}<td class="r"><b>${Math.round(tSum(6)/tSum(1)*100)}%</b></td></tr></tbody></table></div></div>
+  <div class="grid" style="margin-top:14px;grid-template-columns:1.3fr 1fr">
+    <div class="card t"><div class="chead"><span class="ms" style="color:var(--accent)">schedule</span><h3>Recent Leads</h3><button class="va" onclick="go('leads')">View All</button></div>
+      <div class="tablewrap"><table><thead><tr><th>Customer / Company</th><th>Source</th><th>Status</th><th>Score</th></tr></thead>
+      <tbody>${RECENT.map(r=>`<tr><td><div class="who">${sav(r[0])}<b style="font-size:12.5px">${r[0]}</b></div></td><td class="small"><span class="ms" style="font-size:15px;color:var(--muted)">${srcIcon(r[1])}</span> ${r[1]}</td><td><span class="pill ${ST_COL[r[2]]}">${r[2]}</span></td><td>${r[3]}</td></tr>`).join('')}</tbody></table></div></div>
+    <div class="card"><div class="chead"><span class="ms" style="color:var(--accent)">history</span><h3>Recent Activity</h3><button class="va" onclick="go('reports')">View All</button></div>
+      <div class="act">${ACT.map(a=>`<div class="a">${sav(a[0])}<div><b>${a[0]}</b> ${a[1]}<div class="muted small">${a[2]}</div></div></div>`).join('')}</div></div>
+  </div>`;
+}
+
+/* ---------------- GM TRADERS B2B ---------------- */
+const B2B_PRODUCTS = ['Care label (satin)','Care label (nylon)','Woven label','Heat transfer label','Sublimation sticker','Hang tag','Price sticker','Size label','Other accessories'];
+let ACCOUNTS = [
+ {name:'Khan Enterprise', area:'Fatullah, Narayanganj', people:[['Imran Khan','Owner','01711-540540']], buyers:['Local brands'], products:['Heat transfer label','Woven label'], cycle:30, last:'2026-09-10', avg:540000,
+  orders:[['2026-09-10','Heat transfer label',120000,540000],['2026-08-11','Heat transfer label',110000,495000],['2026-07-09','Woven label',60000,380000]]},
+ {name:'Rahman Knitwear Ltd', area:'Konabari, Gazipur', people:[['Sabina Yasmin','Merchandiser','01715-221133'],['Kamal Hossain','Commercial manager','01711-998877']], buyers:['Nordic Wear (Sweden)','UrbanLine (UK)'], products:['Care label (satin)','Hang tag'], cycle:21, last:'2026-08-20', avg:310000,
+  orders:[['2026-08-20','Care label (satin)',90000,310000],['2026-07-29','Hang tag',70000,245000],['2026-07-08','Care label (satin)',85000,298000]]},
+ {name:'Meghna Apparels', area:'Ashulia, Savar', people:[['Tariq Aziz','Merchandiser','01817-445566']], buyers:['Maple & Co (Canada)'], products:['Woven label','Size label'], cycle:30, last:'2026-09-22', avg:260000,
+  orders:[['2026-09-22','Woven label',80000,260000],['2026-08-24','Size label',100000,150000]]},
+ {name:'Padma Denim Ltd', area:'Savar, Dhaka', people:[['Rezaul Karim','Merchandiser','01912-676767']], buyers:['BlueRiver Jeans (USA)'], products:['Hang tag','Price sticker'], cycle:45, last:'2026-07-25', avg:420000,
+  orders:[['2026-07-25','Hang tag',150000,420000],['2026-06-08','Hang tag',140000,392000]]},
+ {name:'Sonar Bangla Sweaters', area:'BSCIC, Narayanganj', people:[['Nusrat Jahan','Merchandiser','01670-343434']], buyers:['WarmKnit (Germany)'], products:['Woven label','Hang tag'], cycle:30, last:'2026-09-03', avg:190000,
+  orders:[['2026-09-03','Woven label',50000,190000],['2026-08-02','Woven label',48000,182000]]},
+ {name:'Delta Kids Wear', area:'CEPZ, Chattogram', people:[['Faisal Ahmed','Merchandiser','01819-565656']], buyers:['Kiddo Europe (Germany)'], products:['Heat transfer label','Care label (nylon)'], cycle:60, last:'2026-08-15', avg:650000,
+  orders:[['2026-08-15','Heat transfer label',200000,650000],['2026-06-14','Heat transfer label',190000,617000]]},
+ {name:'Tanbazar Fashion House', area:'Tanbazar, Narayanganj', people:[['Jalal Uddin','Owner','01552-121314']], buyers:['Own wholesale'], products:['Sublimation sticker','Price sticker'], cycle:14, last:'2026-09-03', avg:45000,
+  orders:[['2026-09-03','Sublimation sticker',20000,45000],['2026-08-20','Sublimation sticker',18000,41000],['2026-08-05','Price sticker',30000,22000]]},
+];
+function acctStatus(a){ const d=-days(a.last), next=a.cycle-d;
+  if (d > a.cycle*1.3) return {k:'quiet', cls:'p-red', label:'No order — '+(d-a.cycle)+' days late', d, next};
+  if (d >= a.cycle*0.8) return {k:'due', cls:'p-amber', label:next>0?'Reorder due in '+next+' days':'Reorder due now', d, next};
+  return {k:'active', cls:'p-green', label:'Active', d, next}; }
+let SAMPLES = [
+ {id:'S-201', acct:'Rakib Knit Composite', merch:'Rakibul Islam', buyer:'Nordic Wear (Sweden)', style:'NW-24-118', product:'Care label (satin)', qty:50000, stage:'Sent', sent:'2026-09-23', lead:'Rakibul Islam'},
+ {id:'S-202', acct:'Style Craft Buying House', merch:'Farhan Ahmed', buyer:'Maple & Co (Canada)', style:'MC-771', product:'Woven label', qty:30000, stage:'Sent', sent:'2026-09-26', lead:'Farhan Ahmed'},
+ {id:'S-203', acct:'Hasan Garments Ltd', merch:'Mahmud Hasan', buyer:'Kiddo Europe (Germany)', style:'KE-2611', product:'Heat transfer label', qty:80000, stage:'Approved', sent:'2026-09-18', lead:'Mahmud Hasan'},
+ {id:'S-204', acct:'Rahman Knitwear Ltd', merch:'Sabina Yasmin', buyer:'UrbanLine (UK)', style:'UL-5530', product:'Hang tag', qty:40000, stage:'Requested', sent:null},
+ {id:'S-205', acct:'Meghna Apparels', merch:'Tariq Aziz', buyer:'Maple & Co (Canada)', style:'MC-702', product:'Size label', qty:60000, stage:'Order', sent:'2026-09-08'},
+ {id:'S-206', acct:'Padma Denim Ltd', merch:'Rezaul Karim', buyer:'BlueRiver Jeans (USA)', style:'BR-310', product:'Price sticker', qty:25000, stage:'Rejected', sent:'2026-09-05', reason:'Buyer wanted matte finish'},
+ {id:'S-207', acct:'Sonar Bangla Sweaters', merch:'Nusrat Jahan', buyer:'WarmKnit (Germany)', style:'WK-88', product:'Woven label', qty:20000, stage:'Order', sent:'2026-08-28'},
+];
+const SST = [['Requested','Sample asked','p-grey'],['Sent','Waiting buyer approval','p-acc'],['Approved','Buyer approved','p-amber'],['Order','Order received','p-green'],['Rejected','Rejected','p-red']];
+const sPill = st => { const m={ 'Not yet':'p-grey', Sent:'p-acc', Approved:'p-green', Rejected:'p-red' }; return `<span class="pill ${m[st]||'p-grey'}">Sample: ${st}</span>`; };
+function viewB2B(){
+  const tab=S.b2bTab||'accounts';
+  const quiet=ACCOUNTS.filter(a=>acctStatus(a).k==='quiet'), due=ACCOUNTS.filter(a=>acctStatus(a).k==='due');
+  const done=SAMPLES.filter(x=>x.stage==='Order'||x.stage==='Rejected'), conv=done.length?Math.round(SAMPLES.filter(x=>x.stage==='Order').length/done.length*100):0;
+  const monthly=ACCOUNTS.reduce((a,x)=>a+x.avg*30/x.cycle,0);
+  return `<div class="grid kpis">
+    <div class="card kpi"><div class="l"><span class="ms">factory</span>Regular factory customers</div><div class="v">${ACCOUNTS.length}</div><div class="small muted">≈ ${tk(monthly)} per month</div></div>
+    <div class="card kpi"><div class="l"><span class="ms" style="color:var(--red)">notification_important</span>Stopped ordering</div><div class="v" style="color:var(--red)">${quiet.length}</div><div class="small muted">${due.length} more due for reorder soon</div></div>
+    <div class="card kpi"><div class="l"><span class="ms">science</span>Samples waiting buyer</div><div class="v" style="color:var(--purple)">${SAMPLES.filter(x=>x.stage==='Sent').length}</div><div class="small muted">${SAMPLES.filter(x=>x.stage==='Requested').length} still to send</div></div>
+    <div class="card kpi"><div class="l"><span class="ms">trending_up</span>Sample → order</div><div class="v" style="color:var(--green)">${conv}%</div><div class="small muted">of finished samples became orders</div></div>
+  </div>
+  <div class="tabs" style="margin-top:14px">${[['accounts','factory','Factory accounts'],['samples','science','Sample tracker'],['stages','view_kanban','B2B leads']].map(t=>`<button class="tab ${tab===t[0]?'active':''}" onclick="S.b2bTab='${t[0]}';render()"><span class="ms">${t[1]}</span>${t[2]}</button>`).join('')}</div>
+  ${tab==='accounts'?b2bAccounts():tab==='samples'?b2bSamples():b2bLeads()}`;
+}
+function b2bAccounts(){
+  const order={quiet:0,due:1,active:2};
+  const A=ACCOUNTS.slice().sort((a,b)=>order[acctStatus(a).k]-order[acctStatus(b).k]);
+  const quiet=A.filter(a=>acctStatus(a).k==='quiet');
+  return `${quiet.length?`<div class="warn red" style="margin:0 0 12px"><span class="ms">notification_important</span><div><b>Alert:</b> ${quiet.map(a=>`<b>${esc(a.name)}</b> (orders every ${a.cycle} days, last order ${acctStatus(a).d} days ago)`).join(' · ')}. They may be buying from another supplier — call the merchandiser today.</div></div>`:''}
+  <div class="card t"><div class="tablewrap"><table>
+    <thead><tr><th>Factory</th><th>Merchandiser</th><th>Buyers</th><th>Usually orders</th><th>Last order</th><th class="r">Avg order</th><th>Status</th><th></th></tr></thead>
+    <tbody>${A.map((a,i)=>{const st=acctStatus(a), k=ACCOUNTS.indexOf(a);return `<tr class="click" onclick="acctDrawer(${k})">
+      <td><div class="who">${sav(a.name)}<div><b style="font-size:12.5px">${esc(a.name)}</b><small>${esc(a.area)}</small></div></div></td>
+      <td class="small">${esc(a.people[0][0])}<div class="muted">${esc(a.people[0][2])}</div></td>
+      <td class="small">${a.buyers.map(esc).join(', ')}</td>
+      <td class="small">Every ${a.cycle} days</td>
+      <td class="small">${fmt(a.last)}<div class="muted">${st.d} days ago</div></td>
+      <td class="r"><b>${tk(a.avg)}</b></td>
+      <td><span class="pill ${st.cls}">${st.label}</span></td>
+      <td onclick="event.stopPropagation()">${st.k!=='active'?`<button class="btn sm primary" onclick="toast('Calling ${esc(a.people[0][0])} (demo)')"><span class="ms">call</span>Call</button>`:''}</td></tr>`}).join('')}</tbody></table></div></div>
+  <p class="small muted">"Usually orders" is worked out from past orders. When a factory goes 30% past its normal gap without ordering, it turns red and shows on the Dashboard.</p>
+  <button class="btn" onclick="newAcctModal()"><span class="ms">add_business</span>Add factory account</button>`;
+}
+function acctDrawer(k){ const a=ACCOUNTS[k], st=acctStatus(a);
+  openModal(`<h3><span class="who">${sav(a.name)}<span><b>${esc(a.name)}</b><small style="display:block;font-weight:400" class="muted">${esc(a.area)}</small></span></span><button class="iconbtn" onclick="closeModal()"><span class="ms">close</span></button></h3>
+   <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px"><span class="pill ${st.cls}">${st.label}</span><span class="pill p-grey">Orders every ${a.cycle} days</span><span class="pill p-grey">Avg ${tk(a.avg)}</span></div>
+   <b class="small">People</b>${a.people.map(p=>`<div class="row">${sav(p[0])}<div style="flex:1"><b>${esc(p[0])}</b><div class="small muted">${esc(p[1])} · ${esc(p[2])}</div></div><button class="btn sm" onclick="toast('Calling ${esc(p[0])} (demo)')"><span class="ms">call</span></button></div>`).join('')}
+   <div class="small" style="margin:10px 0"><b>Buyers:</b> ${a.buyers.map(esc).join(', ')}<br><b>Products:</b> ${a.products.map(esc).join(', ')}</div>
+   <b class="small">Order history</b>
+   <table style="font-size:12.5px"><thead><tr><th>Date</th><th>Product</th><th class="r">Pcs</th><th class="r">Amount</th></tr></thead><tbody>${a.orders.map(o=>`<tr><td>${fmt(o[0])}</td><td>${esc(o[1])}</td><td class="r">${o[2].toLocaleString('en-IN')}</td><td class="r">${tk(o[3])}</td></tr>`).join('')}</tbody></table>
+   <div class="form" style="margin-top:12px;grid-template-columns:1.4fr 1fr 1fr auto;align-items:end">
+     <div class="f"><label>New order — product</label><select id="aoP">${B2B_PRODUCTS.map(p=>`<option>${p}</option>`).join('')}</select></div>
+     <div class="f"><label>Pcs</label><input id="aoQ" type="number" value="50000"></div>
+     <div class="f"><label>Amount ৳</label><input id="aoA" type="number" value="${a.avg}"></div>
+     <button class="btn primary" onclick="acctOrder(${k})">Save</button></div>`); }
+function acctOrder(k){ const a=ACCOUNTS[k]; a.orders.unshift([iso(TODAY),$('#aoP').value,+$('#aoQ').value||0,+$('#aoA').value||0]); a.last=iso(TODAY);
+  const gaps=[]; for(let i=0;i<a.orders.length-1;i++) gaps.push((D(a.orders[i][0])-D(a.orders[i+1][0]))/86400000);
+  if(gaps.length) a.cycle=Math.max(7,Math.round(gaps.reduce((x,y)=>x+y,0)/gaps.length));
+  a.avg=Math.round(a.orders.reduce((x,o)=>x+o[3],0)/a.orders.length); closeModal(); toast('Order saved — '+a.name+' is active again ✓'); render(); }
+function newAcctModal(){ openModal(`<h3>Add factory account <button class="iconbtn" onclick="closeModal()"><span class="ms">close</span></button></h3>
+  <div class="form"><div class="f full"><label>Factory name *</label><input id="naN"></div><div class="f"><label>Area</label><input id="naA" placeholder="e.g. Fatullah, Narayanganj"></div>
+  <div class="f"><label>Usually orders every (days)</label><input id="naC" type="number" value="30"></div><div class="f"><label>Merchandiser</label><input id="naM"></div><div class="f"><label>Phone</label><input id="naP"></div>
+  <div class="f full"><label>Buyer / brand</label><input id="naB"></div></div>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveAcct()">Save</button></div>`); }
+function saveAcct(){ const n=$('#naN').value.trim(); if(!n) return toast('Factory name is required');
+  ACCOUNTS.push({name:n, area:$('#naA').value, people:[[$('#naM').value||'—','Merchandiser',$('#naP').value||'—']], buyers:[$('#naB').value||'—'], products:[], cycle:+$('#naC').value||30, last:iso(TODAY), avg:0, orders:[]});
+  closeModal(); toast('Factory account added ✓'); render(); }
+function addAccountFromLead(i){ const l=LEADS[i], b=l[12]; if(ACCOUNTS.some(a=>a.name===l[1])) return;
+  ACCOUNTS.push({name:l[1], area:b.area, people:[[b.merch||l[0],'Merchandiser',b.mphone||l[9]]], buyers:[b.buyer||'—'], products:[b.product], cycle:30, last:iso(TODAY), avg:l[5], orders:[[iso(TODAY),b.product,0,l[5]]]});
+  toast(l[1]+' added to factory accounts ✓'); }
+function b2bSamples(){
+  return `<p class="muted small" style="margin-top:0">Factory asks for a sample → you send it → their buyer approves → order. A sample waiting more than 3 days needs a follow-up call.</p>
+  <div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:10px;align-items:flex-start">${SST.map(([st,lab,cls])=>{const C=SAMPLES.filter(x=>x.stage===st);
+    return `<div style="min-width:230px;flex:1;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span class="pill ${cls}">${lab}</span><span class="muted small">${C.length}</span></div>
+      ${C.map(x=>{const w=x.sent?-days(x.sent):0, late=st==='Sent'&&w>3; return `<div class="card" style="padding:10px;margin-bottom:8px;${late?'border-color:var(--red)':''}">
+        <div style="display:flex;justify-content:space-between;gap:6px"><b style="font-size:13px">${esc(x.acct)}</b><span class="small muted" style="white-space:nowrap">${x.id}</span></div>
+        <div class="small" style="margin:4px 0">${esc(x.product)} · ${x.qty.toLocaleString('en-IN')} pcs</div>
+        <div class="small muted">Buyer: ${esc(x.buyer)} · Style ${esc(x.style)}</div>
+        <div class="small muted">Merch: ${esc(x.merch)}</div>
+        ${x.sent?`<div class="small" style="margin-top:4px;${late?'color:var(--red);font-weight:600':'color:var(--muted)'}">Sent ${fmt(x.sent)}${st==='Sent'?' · waiting '+w+' days'+(late?' — follow up!':''):''}</div>`:''}
+        ${x.reason?`<div class="small" style="color:var(--red);margin-top:4px">Reason: ${esc(x.reason)}</div>`:''}
+        <div style="display:flex;gap:5px;margin-top:8px;flex-wrap:wrap">
+          ${st==='Requested'?`<button class="btn sm primary" onclick="sampleTo('${x.id}','Sent')"><span class="ms">local_shipping</span>Mark sent</button>`:''}
+          ${st==='Sent'?`<button class="btn sm" onclick="sampleTo('${x.id}','Approved')"><span class="ms">thumb_up</span>Approved</button><button class="btn sm" onclick="sampleReject('${x.id}')"><span class="ms">thumb_down</span>Rejected</button>`:''}
+          ${st==='Approved'?`<button class="btn sm green" onclick="sampleTo('${x.id}','Order')"><span class="ms">shopping_cart</span>Got order</button>`:''}
+          ${st==='Rejected'?`<button class="btn sm" onclick="sampleTo('${x.id}','Requested')"><span class="ms">replay</span>Make new sample</button>`:''}
+        </div></div>`}).join('')||'<div class="small muted" style="padding:8px">—</div>'}
+    </div>`}).join('')}</div>
+  <button class="btn" onclick="newSampleModal()"><span class="ms">add</span>New sample request</button>`;
+}
+function syncLeadSample(x){ const l=LEADS.find(l=>l[0]===x.lead||l[1]===x.acct); if(!l||!l[12]) return;
+  const map={Sent:['Sent','Sample sent'],Approved:['Approved','Buyer approved'],Order:['Approved','Order'],Rejected:['Rejected',null],Requested:['Not yet',null]}[x.stage];
+  l[12].sample=map[0]; if(map[1]) l[6]=map[1]; l[10].unshift({d:iso(TODAY),t:'Sample '+x.id+': '+x.stage,w:'You'}); }
+function sampleTo(id,st){ const x=SAMPLES.find(s=>s.id===id); x.stage=st; if(st==='Sent') x.sent=iso(TODAY); if(st==='Requested'){x.sent=null;x.reason='';}
+  syncLeadSample(x); toast(({Sent:'Sample marked as sent — follow up in 3 days',Approved:'Buyer approved ✓ — ask for the order now',Order:'Order received 🎉',Requested:'New sample requested'})[st]); render(); }
+function sampleReject(id){ openModal(`<h3>Why was the sample rejected?</h3><select id="srR" class="in"><option>Colour not matching</option><option>Wrong size / quality</option><option>Buyer wanted a different finish</option><option>Price too high</option><option>Chose another supplier</option></select>
+  <div style="display:flex;justify-content:flex-end;margin-top:14px"><button class="btn primary" onclick="(function(){const x=SAMPLES.find(s=>s.id==='${id}');x.stage='Rejected';x.reason=$('#srR').value;syncLeadSample(x);closeModal();toast('Saved');render();})()">Save</button></div>`); }
+function newSampleModal(pre={}){ openModal(`<h3>New sample request <button class="iconbtn" onclick="closeModal()"><span class="ms">close</span></button></h3>
+  <div class="form"><div class="f full"><label>Factory / buying house *</label><input id="nsA" value="${esc(pre.acct||'')}"></div><div class="f"><label>Merchandiser</label><input id="nsM" value="${esc(pre.merch||'')}"></div>
+  <div class="f"><label>Buyer / brand</label><input id="nsB" value="${esc(pre.buyer||'')}"></div><div class="f"><label>Style no.</label><input id="nsS" value="${esc(pre.style||'')}"></div>
+  <div class="f"><label>Product</label><select id="nsP">${B2B_PRODUCTS.map(p=>`<option ${p===pre.product?'selected':''}>${p}</option>`).join('')}</select></div><div class="f"><label>Expected order (pcs)</label><input id="nsQ" type="number" value="30000"></div></div>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveSample('${esc(pre.lead||'')}')">Save</button></div>`); }
+function saveSample(lead){ const a=$('#nsA').value.trim(); if(!a) return toast('Factory name is required');
+  const x={id:'S-'+(201+SAMPLES.length), acct:a, merch:$('#nsM').value, buyer:$('#nsB').value, style:$('#nsS').value, product:$('#nsP').value, qty:+$('#nsQ').value||0, stage:'Requested', sent:null, lead};
+  SAMPLES.push(x); closeModal(); toast('Sample '+x.id+' added ✓'); go('b2b',{b2bTab:'samples'}); }
+function sampleFromLead(i){ const l=LEADS[i], b=l[12]; newSampleModal({acct:l[1], merch:b.merch, buyer:b.buyer, style:b.style, product:b.product, lead:l[0]}); }
+function b2bLeads(){
+  const L=LEADS.filter(l=>l[3]==='GM TRADERS');
+  return `<p class="muted small" style="margin-top:0">New factories GM Traders is trying to win. Stages: ${B2B_STAGES.join(' → ')}.</p>
+  <div class="card t"><div class="tablewrap"><table><thead><tr><th>Factory / contact</th><th>Area</th><th>Buyer</th><th>Product</th><th>Source</th><th class="r">Value</th><th>Stage</th><th>Sample</th></tr></thead>
+  <tbody>${L.map(l=>{const b=l[12]||{};return `<tr class="click" onclick="leadDrawer(${LEADS.indexOf(l)})"><td><div class="who">${sav(l[1])}<div><b style="font-size:12.5px">${esc(l[1])}</b><small>${esc(l[0])}</small></div></div></td>
+    <td class="small">${esc(b.area||'—')}</td><td class="small">${esc(b.buyer||'—')}</td><td class="small">${esc(b.product||'—')}</td><td class="small"><span class="ms" style="font-size:15px;color:var(--muted)">${srcIcon(l[2])}</span> ${l[2]}</td>
+    <td class="r"><b>${tk(l[5])}</b></td><td><span class="pill ${ST_COL[l[6]]||'p-grey'}">${l[6]}</span></td><td>${sPill(b.sample||'Not yet')}</td></tr>`}).join('')}</tbody></table></div></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" onclick="addLeadModal();$('#nlBiz').value='GM TRADERS';$('#nlB2B').style.display='grid'"><span class="ms">add</span>Add factory lead</button>
+  <button class="btn" onclick="S.biz='GM TRADERS';$('#bizFilter').value='GM TRADERS';go('pipeline')"><span class="ms">view_kanban</span>Open B2B pipeline</button></div>`;
+}
+
+/* ---------------- TEAM ---------------- */
+let TEAMM = [
+  {n:'Rafiq', role:'Senior Sales Executive', biz:'GM Print Solution', phone:'01711-100200', leads:52, won:11, amt:612000, target:800000, reply:9, fu:18, late:2, on:true},
+  {n:'Nusrat', role:'Sales Executive', biz:'GM Sublimation, Jersey.com.bd', phone:'01811-300400', leads:47, won:8, amt:318000, target:500000, reply:14, fu:15, late:1, on:true},
+  {n:'Tanvir', role:'Corporate Sales', biz:'GM Corporation, GM Trade International', phone:'01911-500600', leads:38, won:5, amt:1250000, target:1500000, reply:22, fu:14, late:3, on:true},
+  {n:'Sumaiya', role:'Sales Executive', biz:'Jersey.com.bd', phone:'01611-700800', leads:44, won:9, amt:405000, target:450000, reply:7, fu:12, late:2, on:true},
+  {n:'Arif', role:'B2B Sales (factories)', biz:'GM TRADERS', phone:'01511-900100', leads:31, won:6, amt:980000, target:1000000, reply:31, fu:10, late:1, on:false},
+];
+function viewTeam(){
+  const tl=TEAMM.reduce((a,t)=>a+t.leads,0), tw=TEAMM.reduce((a,t)=>a+t.won,0), ta=TEAMM.reduce((a,t)=>a+t.amt,0), tt=TEAMM.reduce((a,t)=>a+t.target,0);
+  return `<div class="grid kpis">
+    <div class="card kpi"><div class="l"><span class="ms">groups</span>Sales staff</div><div class="v">${TEAMM.length}</div><div class="small muted">${TEAMM.filter(t=>t.on).length} online now</div></div>
+    <div class="card kpi"><div class="l"><span class="ms">group</span>Leads this month</div><div class="v">${tl}</div><div class="small muted">${tw} won · ${Math.round(tw/tl*100)}% win rate</div></div>
+    <div class="card kpi"><div class="l"><span class="ms">payments</span>Sales this month</div><div class="v" style="color:var(--green)">${tk(ta)}</div><div class="small muted">Target ${tk(tt)}</div></div>
+    <div class="card kpi"><div class="l"><span class="ms">bolt</span>Avg first reply</div><div class="v">${Math.round(TEAMM.reduce((a,t)=>a+t.reply,0)/TEAMM.length)} min</div><div class="small muted">Goal: under 15 min</div></div>
+  </div>
+  <div style="display:flex;justify-content:flex-end;margin:14px 0 10px"><button class="btn" onclick="addStaffModal()"><span class="ms">person_add</span>Add team member</button></div>
+  <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">${TEAMM.map(t=>{ const pct=Math.min(100,t.amt/t.target*100);
+    return `<div class="card tcard"><span class="av" style="background:${colOf(t.n)}">${t.n[0]}</span>
+      <div><b style="font-size:15px">${t.n}</b> <span class="pill ${t.on?'p-green':'p-grey'}" style="margin-left:4px">${t.on?'Online':'Offline'}</span></div>
+      <div class="small muted" style="margin-top:3px">${t.role}</div><div class="small" style="margin-top:3px">${t.biz}</div>
+      <div class="stats3"><div><b>${t.leads}</b><small>Leads</small></div><div><b>${t.won}</b><small>Won</small></div><div><b>${Math.round(t.won/t.leads*100)}%</b><small>Win rate</small></div></div>
+      <div style="text-align:left"><div class="small" style="display:flex;justify-content:space-between"><span class="muted">Monthly target</span><b>${Math.round(pct)}%</b></div>
+        <div class="bar" style="margin:5px 0"><i style="width:${pct}%;background:${pct>=90?'var(--green)':pct>=60?'var(--accent)':'var(--amber)'}"></i></div>
+        <div class="small muted">${tk(t.amt)} of ${tk(t.target)}</div></div>
+      <div class="small" style="display:flex;justify-content:space-between;margin-top:10px;text-align:left"><span>First reply <b style="color:${t.reply<=15?'var(--green)':'var(--red)'}">${t.reply} min</b></span><span>Late <b style="color:${t.late?'var(--red)':'var(--green)'}">${t.late}</b></span></div>
+      <div style="display:flex;gap:6px;justify-content:center;margin-top:12px"><button class="btn sm" onclick="toast('Calling ${t.n} (demo)')"><span class="ms">call</span>Call</button><button class="btn sm" onclick="S.fuStaff='${t.n}';go('follow')"><span class="ms">event_available</span>Follow-ups</button></div>
+    </div>`}).join('')}</div>
+  <p class="small muted">Win rate = leads won ÷ all leads the person handled.</p>`;
+}
+function addStaffModal(){
+  openModal(`<h3>Add team member <button class="iconbtn" onclick="closeModal()"><span class="ms">close</span></button></h3>
+   <div class="form"><div class="f"><label>Name *</label><input id="stName"></div><div class="f"><label>Phone</label><input id="stPhone"></div>
+   <div class="f"><label>Role</label><select id="stRole"><option>Sales Executive</option><option>Senior Sales Executive</option><option>Manager</option></select></div>
+   <div class="f"><label>Business</label><select id="stBiz">${BUSINESSES.map(b=>`<option>${b}</option>`).join('')}</select></div>
+   <div class="f full"><label>Monthly target (৳)</label><input id="stTarget" type="number" value="500000"></div></div>
+   <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveStaff()"><span class="ms">save</span>Save</button></div>`);
+}
+function saveStaff(){ const n=$('#stName').value.trim(); if(!n) return toast('Name is required');
+  TEAMM.push({n, role:$('#stRole').value, biz:$('#stBiz').value, phone:$('#stPhone').value, leads:0, won:0, amt:0, target:+$('#stTarget').value||0, reply:0, fu:0, late:0, on:true});
+  STAFF.push(n); closeModal(); toast(n+' added to the team ✓'); render(); }
+
+/* ---------------- FOLLOW-UPS ---------------- */
+let FUS = [
+  {name:'Sabbir Ahmed', co:'Uttara School', staff:'Rafiq', type:'call', d:-3, time:'11:00 AM', what:'School sports day t-shirts, 600 pcs'},
+  {name:'Farzana Rahman', co:'Office team', staff:'Sumaiya', type:'chat', d:-2, time:'03:00 PM', what:'Custom cricket jersey (18 pcs)'},
+  {name:'Selina Parvin', co:'SP Corporate Gifts', staff:'Tanvir', type:'mail', d:-2, time:'12:00 PM', what:'Quotation opened — ask for decision'},
+  {name:'Habib Rahman', co:'Rahman Decor', staff:'Nusrat', type:'chat', d:-1, time:'05:00 PM', what:'Photo print on cushion covers'},
+  {name:'Karim Uddin', co:'Karim Fashion House', staff:'Rafiq', type:'call', d:0, time:'09:30 AM', what:'Confirm design v2 and advance'},
+  {name:'Mahmud Hasan', co:'Hasan Garments Ltd', staff:'Arif', type:'call', d:0, time:'10:30 AM', what:'Buyer approved the label — ask for the order'},
+  {name:'Tahmina Chowdhury', co:'Bloom Boutique', staff:'Nusrat', type:'event', d:0, time:'12:00 PM', what:'Visit showroom with hijab sample'},
+  {name:'Arman Hossain', co:'Chattogram FC', staff:'Sumaiya', type:'call', d:0, time:'03:00 PM', what:'Send quotation for club kit'},
+  {name:'Liton Mia', co:'Liton Cloth Store', staff:'Arif', type:'mail', d:0, time:'04:30 PM', what:'Ready stock price list'},
+  {name:'Shirin Akter', co:'Dhaka Sports Club', staff:'Nusrat', type:'chat', d:1, time:'11:00 AM', what:'Send remaining 22 names'},
+  {name:'Rumana Begum', co:'Rumana Tailors', staff:'Rafiq', type:'event', d:1, time:'02:00 PM', what:'DTF machine demo'},
+  {name:'Rakibul Islam', co:'Rakib Knit Composite', staff:'Arif', type:'call', d:2, time:'10:00 AM', what:'Care label sample — has the buyer approved?'},
+  {name:'Jahid Hossain', co:'JH Exports', staff:'Tanvir', type:'mail', d:3, time:'11:30 AM', what:'Ink import — final price'},
+].map((f,i)=>({...f, id:i, done:false}));
+const FU_T = {call:['call','Call','var(--green)','var(--green-soft)'], chat:['chat','WhatsApp','var(--accent)','var(--accent-soft)'], mail:['mail','Email','var(--purple)','var(--purple-soft)'], event:['location_on','Visit','var(--amber)','var(--amber-soft)']};
+function viewFollow(){
+  const who = S.fuStaff||'all';
+  const F = FUS.filter(f=>who==='all'||f.staff===who);
+  const grp = [['Late','var(--red)',F.filter(f=>!f.done&&f.d<0)],['Today','var(--amber)',F.filter(f=>!f.done&&f.d===0)],['Coming up','var(--accent)',F.filter(f=>!f.done&&f.d>0)],['Done','var(--green)',F.filter(f=>f.done)]];
+  const whenTxt = f => f.d<0? `<b style="color:var(--red)">${-f.d} day${f.d<-1?'s':''} late</b>` : f.d===0? `<b>Today</b> · ${f.time}` : `${fmt(iso(new Date(TODAY.getTime()+f.d*86400000)))} · ${f.time}`;
+  return `<div class="grid kpis">${grp.map(g=>`<div class="card kpi"><div class="l"><span style="width:9px;height:9px;border-radius:50%;background:${g[1]};display:inline-block"></span>${g[0]}</div><div class="v" style="color:${g[1]}">${g[2].length}</div></div>`).join('')}</div>
+  <div style="margin:14px 0;display:flex;gap:10px;flex-wrap:wrap;align-items:center"><div class="seg">${['all',...STAFF].map(s=>`<button class="${who===s?'on':''}" onclick="S.fuStaff='${s}';render()">${s==='all'?'Everyone':s}</button>`).join('')}</div></div>
+  ${grp.map(g=>g[2].length?`<div class="card t" style="margin-bottom:14px"><div class="chead" style="padding-bottom:10px"><span style="width:10px;height:10px;border-radius:50%;background:${g[1]};display:inline-block"></span><h3>${g[0]}</h3><span class="muted small">${g[2].length}</span></div>
+    ${g[2].map(f=>{const t=FU_T[f.type];return `<div class="fu" style="${f.done?'opacity:.55':''}"><div class="ic" style="background:${t[3]};color:${t[2]}"><span class="ms">${t[0]}</span></div>
+      <div style="flex:1;min-width:200px"><b>${t[1]} ${esc(f.name)}</b> <span class="muted small">· ${esc(f.co)}</span><div class="small muted">${esc(f.what)} · ${f.staff}</div></div>
+      <div class="small" style="min-width:120px">${f.done?'<b style="color:var(--green)">✓ Done</b>':whenTxt(f)}</div>
+      ${f.done?`<button class="btn sm ghost" onclick="fuUndo(${f.id})">Undo</button>`:`<button class="btn sm" onclick="fuSnooze(${f.id})"><span class="ms">update</span>Tomorrow</button><button class="btn sm primary" onclick="fuDone(${f.id})"><span class="ms">check</span>Done</button>`}</div>`}).join('')}</div>`:'').join('')}`;
+}
+function fuDone(id){ const f=FUS[id]; openModal(`<h3>Follow-up done — ${esc(f.name)} <button class="iconbtn" onclick="closeModal()"><span class="ms">close</span></button></h3>
+  <div class="f"><label>What happened?</label><select id="fuRes"><option>Talked — customer interested</option><option>Sent price / quotation</option><option>No answer — try again</option><option>Customer not interested</option></select></div>
+  <div class="f" style="margin-top:10px"><label>Note</label><textarea id="fuNote" rows="2" class="in"></textarea></div>
+  <div class="f" style="margin-top:10px"><label>Next follow-up</label><select id="fuNext"><option value="1">Tomorrow</option><option value="3">In 3 days</option><option value="7">Next week</option><option value="0">No more follow-up</option></select></div>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="fuSave(${id})"><span class="ms">check</span>Save</button></div>`); }
+function fuSave(id){ const f=FUS[id], nx=+$('#fuNext').value; f.done=true;
+  if(nx) FUS.push({...f, id:FUS.length, d:nx, done:false, what:$('#fuRes').value});
+  closeModal(); toast('Saved ✓'+(nx?' Next follow-up added':'')); render(); }
+function fuSnooze(id){ FUS[id].d = Math.max(FUS[id].d,0)+1; toast('Moved to tomorrow'); render(); }
+function fuUndo(id){ FUS[id].done=false; render(); }
+
+/* ---------------- REPORTS ---------------- */
+const REP = {
+  week:{label:'This week', funnel:[248,201,128,76,45,28], lost:[['Price too high',7],['No reply',5],['Chose another supplier',4],['Order too small',3]], won:1280000},
+  month:{label:'This month', funnel:[912,744,468,290,171,104], lost:[['Price too high',26],['No reply',21],['Chose another supplier',15],['Order too small',9],['Delivery date too short',6]], won:3565000},
+  year:{label:'This year', funnel:[8240,6590,4120,2560,1480,905], lost:[['Price too high',228],['No reply',190],['Chose another supplier',131],['Order too small',84],['Delivery date too short',52]], won:31800000},
+};
+const BIZREP = [['GM Print Solution',318,41,1540000],['GM Corporation',96,12,890000],['GM Sublimation',154,17,215000],['GM TRADERS',72,11,1320000],['GM Trade International',58,6,1480000],['Jersey.com.bd',214,17,400000]];
+function viewReports(){
+  const p=S.rep||'week', R=REP[p], F=R.funnel, names=['Total leads','Contacted','Interested','Price sent','Negotiation','Won'];
+  const lostT=R.lost.reduce((a,l)=>a+l[1],0);
+  return `<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px"><div class="seg">${Object.keys(REP).map(k=>`<button class="${p===k?'on':''}" onclick="S.rep='${k}';render()">${REP[k].label}</button>`).join('')}</div><span class="spacer"></span>
+    <button class="btn" onclick="printReport()"><span class="ms">picture_as_pdf</span>Download PDF</button><button class="btn" onclick="toast('Excel file downloaded (demo)')"><span class="ms">download</span>Excel</button></div>
+  <div id="repBody">
+  <div class="grid kpis">
+    <div class="card kpi"><div class="l">Leads</div><div class="v">${F[0].toLocaleString('en-IN')}</div><div class="small muted">${R.label}</div></div>
+    <div class="card kpi"><div class="l">Won</div><div class="v" style="color:var(--green)">${F[5].toLocaleString('en-IN')}</div><div class="small muted">${(F[5]/F[0]*100).toFixed(1)}% of all leads</div></div>
+    <div class="card kpi"><div class="l">Sales amount</div><div class="v">${tk(R.won)}</div><div class="small muted">Avg order ${tk(R.won/F[5])}</div></div>
+    <div class="card kpi"><div class="l">Lost</div><div class="v" style="color:var(--red)">${lostT.toLocaleString('en-IN')}</div><div class="small muted">Top reason: ${R.lost[0][0].toLowerCase()}</div></div>
+  </div>
+  <div class="two" style="margin-top:14px">
+    <div class="card"><h3><span class="ms" style="color:var(--accent)">filter_alt</span>How far leads get</h3>
+      ${F.map((v,i)=>`<div class="hbar"><span>${names[i]}</span><div class="track"><i style="width:${v/F[0]*100}%;background:${['#1f6bf2','#14b8a6','#f59e0b','#8b93f8','#6366f1','#16a34a'][i]}"></i></div><b>${v.toLocaleString('en-IN')}</b></div>
+        ${i<5?`<div class="small muted" style="padding-left:130px;margin:-2px 0 2px">↓ ${Math.round(F[i+1]/v*100)}% move to next step</div>`:''}`).join('')}</div>
+    <div class="card"><h3><span class="ms" style="color:var(--red)">thumb_down</span>Why we lost leads</h3>
+      ${R.lost.map(l=>`<div class="hbar"><span>${l[0]}</span><div class="track"><i style="width:${l[1]/R.lost[0][1]*100}%;background:var(--red)"></i></div><b>${l[1]} <span class="muted small">${Math.round(l[1]/lostT*100)}%</span></b></div>`).join('')}
+      <div class="warn amber" style="margin-top:12px"><span class="ms">lightbulb</span>"Price too high" is the biggest reason. Try showing a cheaper fabric option in every quotation.</div></div>
+  </div>
+  <div class="card t" style="margin-top:14px"><div class="chead" style="padding-bottom:10px"><span class="ms" style="color:var(--accent)">store</span><h3>By business (this month)</h3></div>
+    <div class="tablewrap"><table><thead><tr><th>Business</th><th class="r">Leads</th><th class="r">Won</th><th class="r">Win rate</th><th class="r">Sales amount</th><th style="width:30%">Share of sales</th></tr></thead>
+    <tbody>${(()=>{const tot=BIZREP.reduce((a,b)=>a+b[3],0);return BIZREP.map(b=>`<tr><td><b>${b[0]}</b></td><td class="r">${b[1]}</td><td class="r">${b[2]}</td><td class="r">${Math.round(b[2]/b[1]*100)}%</td><td class="r"><b>${tk(b[3])}</b></td><td><div class="bar"><i style="width:${b[3]/tot*100}%;background:var(--accent)"></i></div></td></tr>`).join('')})()}</tbody></table></div></div>
+  <div class="card t" style="margin-top:14px"><div class="chead" style="padding-bottom:10px"><span class="ms" style="color:var(--accent)">groups</span><h3>By staff (this month)</h3></div>
+    <div class="tablewrap"><table><thead><tr><th>Staff</th><th class="r">Leads handled</th><th class="r">Won</th><th class="r">Win rate</th><th class="r">Sales amount</th><th class="r">Target done</th></tr></thead>
+    <tbody>${TEAMM.map(t=>`<tr><td><div class="who">${sav(t.n)}${t.n}</div></td><td class="r">${t.leads}</td><td class="r">${t.won}</td><td class="r"><b>${t.leads?Math.round(t.won/t.leads*100):0}%</b></td><td class="r">${tk(t.amt)}</td><td class="r">${t.target?Math.round(t.amt/t.target*100):0}%</td></tr>`).join('')}</tbody></table></div></div>
+  </div>`;
+}
+function printReport(){ $('#printArea').innerHTML = `<div class="paper"><h4 style="margin-bottom:10px">GM Group — Lead Report (${REP[S.rep||'week'].label})</h4>${$('#repBody').innerHTML}</div>`; window.print(); }
+
+/* ---------------- ANALYTICS ---------------- */
+function viewAnalytics(){
+  const daysN=14, leads=[31,28,35,40,26,22,38,42,36,45,39,33,47,44], won=[3,2,4,5,2,1,4,6,3,5,4,3,6,5];
+  const W=640,H=200,pad=30, mx=Math.max(...leads)*1.15, x=i=>pad+i*(W-pad*2)/(daysN-1), y=v=>H-pad-v/mx*(H-pad*2);
+  const pts=leads.map((v,i)=>`${x(i)},${y(v)}`).join(' ');
+  const labels=[...Array(daysN)].map((_,i)=>{const d=new Date(TODAY.getTime()-(daysN-1-i)*86400000);return d.getDate()+' '+MON[d.getMonth()];});
+  const ROI=[['Facebook',45000,312,1420000],['TikTok',20000,128,380000],['Instagram',15000,96,520000],['Website form',10000,172,1650000],['WhatsApp',0,224,960000],['LinkedIn',8000,14,960000]];
+  const hours=[2,1,1,0,0,1,3,6,11,18,22,20,17,19,21,24,23,19,16,21,27,25,14,6];
+  const hm=Math.max(...hours);
+  return `<div class="card"><div class="chead"><span class="ms" style="color:var(--accent)">show_chart</span><h3>New leads per day — last 14 days</h3><span class="muted small" style="margin-left:auto"><span style="color:var(--accent)">●</span> Leads &nbsp; <span style="color:var(--green)">■</span> Won</span></div>
+    <div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" style="width:100%;min-width:520px;height:auto;display:block">
+      ${[0,.25,.5,.75,1].map(t=>`<line x1="${pad}" x2="${W-pad}" y1="${y(mx*t)}" y2="${y(mx*t)}" stroke="currentColor" opacity=".08"/>`).join('')}
+      ${won.map((v,i)=>`<rect x="${x(i)-6}" y="${y(v)}" width="12" height="${H-pad-y(v)}" rx="2" fill="var(--green)" opacity=".75"><title>${labels[i]}: ${v} won</title></rect>`).join('')}
+      <polygon points="${x(0)},${H-pad} ${pts} ${x(daysN-1)},${H-pad}" fill="var(--accent)" opacity=".08"/>
+      <polyline points="${pts}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>
+      ${leads.map((v,i)=>`<circle cx="${x(i)}" cy="${y(v)}" r="3.5" fill="var(--card)" stroke="var(--accent)" stroke-width="2"><title>${labels[i]}: ${v} leads</title></circle>`).join('')}
+      ${labels.map((l,i)=>i%2===1?'':`<text x="${x(i)}" y="${H-10}" text-anchor="middle" font-size="8" fill="currentColor" opacity=".55">${l}</text>`).join('')}
+    </svg></div></div>
+  <div class="card t" style="margin-top:14px"><div class="chead" style="padding-bottom:10px"><span class="ms" style="color:var(--accent)">campaign</span><h3>Which channel pays back (this month)</h3></div>
+    <div class="tablewrap"><table><thead><tr><th>Channel</th><th class="r">Ad spend</th><th class="r">Leads</th><th class="r">Cost per lead</th><th class="r">Sales from it</th><th class="r">Return</th></tr></thead>
+    <tbody>${ROI.map(r=>`<tr><td><span class="ms" style="font-size:16px;color:var(--muted)">${srcIcon(r[0])}</span> <b>${r[0]}</b></td><td class="r">${r[1]?tk(r[1]):'<span class="muted">Free</span>'}</td><td class="r">${r[2]}</td><td class="r">${r[1]?tk(r[1]/r[2]):'—'}</td><td class="r"><b>${tk(r[3])}</b></td>
+      <td class="r">${r[1]?`<span class="pill ${r[3]/r[1]>=30?'p-green':r[3]/r[1]>=15?'p-amber':'p-red'}">${Math.round(r[3]/r[1])}×</span>`:'<span class="pill p-green">Free</span>'}</td></tr>`).join('')}</tbody></table></div>
+    <p class="small muted" style="padding:0 16px 12px;margin:0">Return = sales ÷ ad spend. 30× or more is very good.</p></div>
+  <div class="two" style="margin-top:14px">
+    <div class="card"><h3><span class="ms" style="color:var(--accent)">timer</span>How fast staff reply to a new lead</h3>
+      ${TEAMM.slice().sort((a,b)=>a.reply-b.reply).map(t=>`<div class="hbar"><span>${t.n}</span><div class="track"><i style="width:${Math.min(100,t.reply/35*100)}%;background:${t.reply<=15?'var(--green)':'var(--red)'}"></i><i style="left:${15/35*100}%;width:2px;background:var(--amber);border-radius:0;top:-3px;bottom:-3px"></i></div><b>${t.reply} min</b></div>`).join('')}
+      <div class="small muted" style="margin-top:8px"><span style="color:var(--amber)">|</span> Goal: reply within 15 minutes. Leads answered fast buy more often.</div></div>
+    <div class="card"><h3><span class="ms" style="color:var(--accent)">schedule</span>When leads message you</h3>
+      <div style="display:flex;align-items:flex-end;gap:3px;height:130px">${hours.map((h,i)=>`<div title="${i}:00 — ${h} leads" style="flex:1;height:${Math.max(3,h/hm*100)}%;background:${h/hm>.8?'var(--accent)':'var(--blue-soft)'};border-radius:3px 3px 0 0"></div>`).join('')}</div>
+      <div style="display:flex;justify-content:space-between" class="small muted"><span>12am</span><span>6am</span><span>12pm</span><span>6pm</span><span>11pm</span></div>
+      <div class="warn amber" style="margin-top:10px"><span class="ms">nightlight</span>Most messages come 8–10 pm. Keep one staff on WhatsApp in the evening, or turn on the auto-reply.</div></div>
+  </div>`;
+}
+
+/* ---------------- SETTINGS ---------------- */
+let SET = {
+  tab:'business',
+  biz: BUSINESSES.map((b,i)=>({n:b, on:true, prefix:['GMP','GMC','GMS','GMT','GTI','JCB'][i]})),
+  stages:['New','Contacted','Interested','Price sent','Negotiation','Won','Lost'],
+  rules:[['WhatsApp or Facebook','GM Sublimation','Sumaiya'],['Website form','GM Print Solution','Tanvir'],['Message has "jersey"','Jersey.com.bd','Nusrat'],['Everything else','Any','Take turns (Rafiq, Arif)']],
+  tpl:[['Welcome','Assalamu alaikum! GM Group-e message korar jonno dhonnobad. Apnar ki product lagbe, koto pcs, ar kobe lagbe janale amra 15 minute-er moddhe price janabo.'],
+       ['Price follow-up','Apnake gotokal quotation pathiyechilam. Kono proshno thakle janaben, ajke confirm korle delivery time-e dite parbo.'],
+       ['Advance request','Design approve hoyeche ✅ Production shuru korte 50% advance bKash/Nagad-e pathiye Trx ID din please.'],
+       ['Delivery ready','Apnar order ready! Kal delivery dibo. Baki taka delivery-r somoy dite parben.']],
+  notif:[['New lead arrives','Push + sound to assigned staff',true],['Follow-up is due','15 minutes before, on phone',true],['Follow-up is late 1 day','Tell the manager',true],['No reply in 15 minutes','Move lead to next staff',false],['Customer approves design','Tell the staff on WhatsApp',true],['Payment received','Tell manager and accounts',true],['Daily summary','8:00 AM report to owner',true]],
+  roles: STAFF.map(s=>[s, s==='Tanvir'?'Manager':'Sales']),
+  autoReply:true,
+};
+function viewSettings(){
+  const tabs=[['business','store','Businesses'],['stages','view_kanban','Sales stages'],['rules','call_split','Lead rules'],['tpl','quickreply','Message templates'],['notif','notifications','Alerts'],['roles','admin_panel_settings','Users & roles']];
+  const body = {
+    business: `<h3><span class="ms">store</span>GM businesses</h3><p class="small muted" style="margin-top:0">Turn a business off to hide it from lead forms. Prefix is used in order numbers.</p>
+      ${SET.biz.map((b,i)=>`<div class="row"><span class="av" style="background:${colOf(b.n)};color:#fff;border:0">${b.n.replace('GM ','')[0]}</span><div style="flex:1"><b>${b.n}</b><div class="small muted">Order no. like ${b.prefix}-1001</div></div>
+        <input class="in" style="width:80px;text-align:center" value="${b.prefix}" onchange="SET.biz[${i}].prefix=this.value.toUpperCase();render()">
+        <label class="sw"><input type="checkbox" ${b.on?'checked':''} onchange="SET.biz[${i}].on=this.checked;toast('${b.n} '+(this.checked?'on':'off'))"><span></span></label></div>`).join('')}`,
+    stages: `<h3><span class="ms">view_kanban</span>Sales stages</h3><p class="small muted" style="margin-top:0">The steps every lead goes through. Use the arrows to change the order. <b>GM TRADERS</b> uses its own factory stages: ${B2B_STAGES.join(' → ')}.</p>
+      ${SET.stages.map((s,i)=>`<div class="row"><span class="av">${i+1}</span><input class="in" value="${esc(s)}" style="flex:1;min-width:0" onchange="SET.stages[${i}]=this.value">
+        <button class="iconbtn" style="color:var(--muted)" ${i?'':'disabled'} onclick="mvStage(${i},-1)"><span class="ms">arrow_upward</span></button>
+        <button class="iconbtn" style="color:var(--muted)" ${i<SET.stages.length-1?'':'disabled'} onclick="mvStage(${i},1)"><span class="ms">arrow_downward</span></button>
+        <button class="iconbtn" onclick="SET.stages.splice(${i},1);render()"><span class="ms">delete</span></button></div>`).join('')}
+      <button class="btn sm" style="margin-top:10px" onclick="SET.stages.splice(SET.stages.length-2,0,'New stage');render()"><span class="ms">add</span>Add stage</button>`,
+    rules: `<h3><span class="ms">call_split</span>Who gets new leads automatically</h3><p class="small muted" style="margin-top:0">Rules are checked from top to bottom. The first rule that matches wins.</p>
+      ${SET.rules.map((r,i)=>`<div class="row"><span class="av">${i+1}</span><div style="flex:1"><span class="muted small">If</span> <b>${esc(r[0])}</b> <span class="muted small">for</span> <b>${esc(r[1])}</b></div><span class="ms" style="color:var(--muted)">arrow_forward</span><span class="pill p-acc">${esc(r[2])}</span>
+        ${i<SET.rules.length-1?`<button class="iconbtn" onclick="SET.rules.splice(${i},1);render()"><span class="ms">delete</span></button>`:'<span style="width:30px"></span>'}</div>`).join('')}
+      <div class="form rulef" style="margin-top:14px;align-items:end">
+        <div class="f"><label>If lead comes from</label><select id="rlSrc">${SRC.map(s=>`<option>${s[0]}</option>`).join('')}<option>Message has "hoodie"</option><option>Deal over ৳5,00,000</option></select></div>
+        <div class="f"><label>For business</label><select id="rlBiz"><option>Any</option>${BUSINESSES.map(b=>`<option>${b}</option>`).join('')}</select></div>
+        <div class="f"><label>Give to</label><select id="rlTo">${STAFF.map(s=>`<option>${s}</option>`).join('')}</select></div>
+        <button class="btn primary" onclick="addRule()"><span class="ms">add</span>Add</button></div>`,
+    tpl: `<h3><span class="ms">quickreply</span>Quick reply templates</h3>
+      <div class="row"><div style="flex:1"><b>Auto-reply to new WhatsApp messages</b><div class="small muted">Sends the "Welcome" message at once, day or night</div></div><label class="sw"><input type="checkbox" ${SET.autoReply?'checked':''} onchange="SET.autoReply=this.checked"><span></span></label></div>
+      ${SET.tpl.map((t,i)=>`<div style="padding:12px 0;border-bottom:1px solid var(--line)"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b>${esc(t[0])}</b><span class="spacer"></span>
+        <button class="btn sm ghost" onclick="navigator.clipboard&&navigator.clipboard.writeText(SET.tpl[${i}][1]);toast('Copied')"><span class="ms">content_copy</span>Copy</button></div>
+        <textarea class="in" rows="2" onchange="SET.tpl[${i}][1]=this.value;toast('Template saved')">${esc(t[1])}</textarea></div>`).join('')}
+      <button class="btn sm" style="margin-top:10px" onclick="SET.tpl.push(['New template','']);render()"><span class="ms">add</span>Add template</button>`,
+    notif: `<h3><span class="ms">notifications</span>Alerts</h3>${SET.notif.map((n,i)=>`<div class="row"><div style="flex:1"><b>${n[0]}</b><div class="small muted">${n[1]}</div></div><label class="sw"><input type="checkbox" ${n[2]?'checked':''} onchange="SET.notif[${i}][2]=this.checked"><span></span></label></div>`).join('')}`,
+    roles: `<h3><span class="ms">admin_panel_settings</span>Users & roles</h3>
+      <div class="small muted" style="margin-bottom:6px"><b>Owner</b> sees everything · <b>Manager</b> sees their businesses and staff · <b>Sales</b> sees only their own leads</div>
+      <div class="row"><span class="av" style="background:var(--accent);color:#fff;border:0">TT</span><div style="flex:1"><b>Tanvir Toha</b><div class="small muted">toha@softifybd.com</div></div><span class="pill p-acc">Owner</span></div>
+      ${SET.roles.map((r,i)=>`<div class="row">${sav(r[0])}<div style="flex:1"><b>${r[0]}</b></div><select class="in" style="width:130px" onchange="SET.roles[${i}][1]=this.value;toast('${r[0]} is now '+this.value)">${['Manager','Sales'].map(x=>`<option ${x===r[1]?'selected':''}>${x}</option>`).join('')}</select></div>`).join('')}`,
+  }[SET.tab];
+  return `<div class="two-s"><div class="card" style="padding:8px"><div class="set-nav">${tabs.map(t=>`<button class="${SET.tab===t[0]?'on':''}" onclick="SET.tab='${t[0]}';render()"><span class="ms">${t[1]}</span>${t[2]}</button>`).join('')}</div></div>
+    <div class="card">${body}</div></div>`;
+}
+function mvStage(i,d){ const s=SET.stages; [s[i],s[i+d]]=[s[i+d],s[i]]; render(); }
+function addRule(){ SET.rules.splice(SET.rules.length-1,0,[$('#rlSrc').value,$('#rlBiz').value,$('#rlTo').value]); toast('Rule added ✓'); render(); }
+
+/* ---------------- LEADS ---------------- */
+const LEADS = [
+ ['Karim Uddin','Karim Fashion House','WhatsApp','GM Print Solution','Need 500 sublimation t-shirts for Eid collection',180000,'Interested','Rafiq','Today'],
+ ['Shirin Akter','Dhaka Sports Club','Facebook','Jersey.com.bd','Football jerseys, 40 pcs with names & numbers',64000,'Price sent','Nusrat','Tomorrow'],
+ ['Mahmud Hasan','Hasan Garments Ltd','Website form','GM TRADERS','Heat transfer labels for kids t-shirts, 80,000 pcs',420000,'Buyer approved','Arif','Today','01711-420420',null,0,{area:'Fatullah, Narayanganj',merch:'Mahmud Hasan',mphone:'01711-420420',buyer:'Kiddo Europe (Germany)',style:'KE-2611',product:'Heat transfer label',sample:'Approved'}],
+ ['Rakibul Islam','Rakib Knit Composite','Factory visit','GM TRADERS','Care labels + hang tags, 50,000 pcs monthly',350000,'Sample sent','Arif','29 Sept','01911-443322',null,0,{area:'BSCIC, Narayanganj',merch:'Rakibul Islam',mphone:'01911-443322',buyer:'Nordic Wear (Sweden)',style:'NW-24-118',product:'Care label (satin)',sample:'Sent'}],
+ ['Tahmina Chowdhury','Bloom Boutique','TikTok','GM Sublimation','Sublimation hijab print sample',15000,'New','Nusrat','Today'],
+ ['Jahid Hossain','JH Exports','Website form','GM Trade International','Import of printing ink — 20 drums',960000,'Price sent','Tanvir','30 Sept'],
+ ['Sabbir Ahmed','Uttara School','Website form','GM Print Solution','School sports day t-shirts, 600 pcs',210000,'Contacted','Rafiq','3d late'],
+ ['Arman Hossain','Chattogram FC','Instagram','Jersey.com.bd','Club kit: home + away, 60 sets',150000,'Interested','Sumaiya','Today'],
+ ['Selina Parvin','SP Corporate Gifts','Website form','GM Corporation','Branded caps & t-shirts for 300 staff',285000,'Price sent','Tanvir','2d late'],
+ ['Sharmin Nahar','Nahar Events','Facebook','GM Print Solution','Event t-shirts 250 pcs',87500,'Won','Rafiq','—'],
+ ['Mitu Das','—','Facebook','GM Sublimation','Mug printing (too small order)',2500,'Lost','Arif','—'],
+];
+LEADS.push(
+ ['Rumana Begum','Rumana Tailors','YouTube','GM Print Solution','Asked about DTF transfer machine demo',75000,'New','Rafiq','Tomorrow'],
+ ['Farzana Rahman','Office team','Instagram','Jersey.com.bd','Custom cricket jersey (18 pcs)',27000,'Contacted','Sumaiya','2d late'],
+ ['Habib Rahman','Rahman Decor','WhatsApp','GM Sublimation','Photo print on cushion covers',6000,'Contacted','Nusrat','1d late'],
+ ['Tanjil Ahmed','Gulshan Gym','TikTok','Jersey.com.bd','Gym wear with logo, 80 pcs',56000,'Negotiation','Sumaiya','29 Sept'],
+ ['Liton Mia','Liton Cloth Store','Phone call','GM Trade International','Ready stock t-shirt price list',48000,'New','Arif','Today'],
+ ['Imran Khan','Khan Enterprise','Walk-in','GM TRADERS','Heat transfer + woven labels, monthly supply',540000,'Repeat customer','Arif','10 Oct','01711-540540',null,0,{area:'Fatullah, Narayanganj',merch:'Imran Khan',mphone:'01711-540540',buyer:'Local brands',style:'Various',product:'Heat transfer label',sample:'Approved'}],
+ ['Shamim Reza','Ashulia Apparels Ltd','Factory visit','GM TRADERS','Hang tags + price stickers for new buyer',180000,'Visited','Arif','30 Sept','01819-778899',null,0,{area:'Ashulia, Savar',merch:'Shamim Reza',mphone:'01819-778899',buyer:'UrbanLine (UK)',style:'—',product:'Hang tag',sample:'Not yet'}],
+ ['Nazmul Huda','Delta Knitwear','Trade fair','GM TRADERS','Sublimation stickers for sportswear',260000,'New','Arif','Today','01713-121212',null,0,{area:'Gazipur',merch:'Nazmul Huda',mphone:'01713-121212',buyer:'Sportline (Spain)',style:'—',product:'Sublimation sticker',sample:'Not yet'}],
+ ['Farhan Ahmed','Style Craft Buying House','Merchandiser reference','GM TRADERS','Woven main labels for 3 styles',220000,'Sample sent','Arif','1 Oct','01552-909090',null,0,{area:'Uttara, Dhaka',merch:'Farhan Ahmed',mphone:'01552-909090',buyer:'Maple & Co (Canada)',style:'MC-771 / 772 / 775',product:'Woven label',sample:'Sent'}],
+ ['Mousumi Akter','Mou Fashion (Facebook page)','Facebook group','GM TRADERS','Starter pack: 500 woven labels + 500 hang tags',9500,'Order','Arif','—','01633-454545',null,0,{area:'Mirpur, Dhaka',merch:'Mousumi Akter',mphone:'01633-454545',buyer:'Own brand',style:'—',product:'Woven label',sample:'Approved'}],
+ ['Nasrin Sultana','—','WhatsApp','Jersey.com.bd','Bangladesh fan jersey, 12 pcs',9600,'Won','Sumaiya','—'],
+);
+LEADS.forEach((l,i)=>{ l[9] = l[9] || ('01'+(7+i%3)+(10+i)+'-'+(234500+i*1111)); l[10] = l[10] || [{d:'2026-09-26',t:'Lead came in from '+l[2],w:'System'}]; });
+function leadFilterBar(){
+  const F=S.lf||(S.lf={stage:'all',src:'all',staff:'all'});
+  const sel=(k,opts,lab)=>`<select class="in" style="width:auto" onchange="S.lf.${k}=this.value;render()"><option value="all">${lab}</option>${opts.map(o=>`<option ${F[k]===o?'selected':''}>${o}</option>`).join('')}</select>`;
+  return `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center">${sel('stage',[...new Set([...SET.stages,...B2B_STAGES])],'All stages')}${sel('src',SOURCES,'All sources')}${sel('staff',STAFF,'Everyone')}
+    <span class="spacer"></span><button class="btn" onclick="toast('Excel file downloaded (demo)')"><span class="ms">download</span>Excel</button><button class="btn" onclick="importModal()"><span class="ms">upload</span>Import</button></div>`;
+}
+function filteredLeads(){ const q=($('#searchBox').value||'').toLowerCase(), F=S.lf||{stage:'all',src:'all',staff:'all'};
+  return LEADS.filter(l=>(S.biz==='all'||l[3]===S.biz) && (F.stage==='all'||l[6]===F.stage) && (F.src==='all'||l[2]===F.src) && (F.staff==='all'||l[7]===F.staff) && (!q || l.slice(0,10).join(' ').toLowerCase().includes(q))).sort((a,b)=>(b[11]||0)-(a[11]||0)); }
+function viewLeads(){
+  const L=filteredLeads();
+  return leadFilterBar() + `<div class="card t"><div class="chead" style="padding-bottom:8px"><h3>${L.length} leads</h3><span class="muted small">Click a lead to open it</span></div><div class="tablewrap"><table>
+   <thead><tr><th>Customer / Company</th><th>Source</th><th>Business</th><th>What they want</th><th class="r">Deal value</th><th>Status</th><th>Assigned To</th><th>Next follow-up</th></tr></thead>
+   <tbody>${L.map(l=>{ const o=orders.find(x=>x.name===l[0]);
+     return `<tr class="click" onclick="leadDrawer(${LEADS.indexOf(l)})"><td><div class="who">${sav(l[0])}<div><b style="font-size:12.5px">${l[0]}</b><small>${l[1]}</small></div></div></td>
+     <td class="small"><span class="ms" style="font-size:15px;color:var(--muted)">${srcIcon(l[2])}</span> ${l[2]}</td><td class="small">${l[3]}</td><td class="small">${l[4]}${o?` <span class="pill p-acc" style="margin-left:4px">Order ${o.id}</span>`:''}</td>
+     <td class="r"><b>${tk(l[5])}</b></td><td><span class="pill ${ST_COL[l[6]]}">${l[6]}</span></td><td>${l[7]}</td><td class="small" style="${/late/.test(l[8])?'color:var(--red);font-weight:600':''}">${l[8]}</td></tr>`}).join('') || '<tr><td colspan="8" class="muted" style="text-align:center;padding:24px">No lead found</td></tr>'}</tbody></table></div></div>
+   <p class="small muted">Leads with an <b>Order</b> tag already have an order workspace.</p>`;
+}
+function importModal(){ openModal(`<h3>Import leads <button class="iconbtn" onclick="closeModal()"><span class="ms">close</span></button></h3>
+  <p class="small muted" style="margin-top:0">Paste from Excel: <b>Name, Phone, Company, What they want</b> — one per line. Leads are shared out using your lead rules.</p>
+  <textarea id="impBox" class="in" rows="7" placeholder="Rubel Hossain, 01711-555666, Rubel Store, 200 polo shirts"></textarea>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="doImport()"><span class="ms">upload</span>Import</button></div>`); }
+function doImport(){ let n=0; $('#impBox').value.split('\n').forEach(line=>{ const p=line.split(/\t|,/).map(x=>x.trim()); if(!p[0]) return;
+  if(LEADS.some(l=>l[9]&&p[1]&&l[9].replace(/\D/g,'')===p[1].replace(/\D/g,''))) return;
+  LEADS.push([p[0],p[2]||'—','Walk-in',BUSINESSES[0],p[3]||'—',0,'New',STAFF[n%STAFF.length],'Today',p[1]||'',[{d:iso(TODAY),t:'Imported from Excel',w:'You'}],Date.now()+n]); n++; });
+  closeModal(); toast(n+' leads imported (duplicates skipped)'); go('leads'); }
+
+/* ---- lead drawer ---- */
+function leadDrawer(i){ const l=LEADS[i], o=orders.find(x=>x.name===l[0]);
+  openModal(`<h3><span class="who">${sav(l[0])}<span><b>${esc(l[0])}</b><small style="display:block;font-weight:400" class="muted">${esc(l[1])} · ${l[3]}</small></span></span><button class="iconbtn" onclick="closeModal()"><span class="ms">close</span></button></h3>
+   <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">
+     <button class="btn sm" onclick="toast('Calling ${esc(l[9])} (demo)')"><span class="ms">call</span>Call</button>
+     <button class="btn sm" onclick="closeModal();S.chat=Math.max(0,CHATS.findIndex(c=>c.lead===${i}));go('inbox')"><span class="ms">chat</span>WhatsApp</button>
+     ${o?`<button class="btn sm primary" onclick="closeModal();go('order',{id:'${o.id}',tab:'details'})"><span class="ms">inventory_2</span>Open order ${o.id}</button>`
+        :`<button class="btn sm primary" onclick="createOrder(${i})"><span class="ms">add_shopping_cart</span>Create order</button>`}
+   </div>
+   <div class="form">
+     <div class="f"><label>Phone</label><input value="${esc(l[9])}" onchange="LEADS[${i}][9]=this.value"></div>
+     <div class="f"><label>Came from</label><input value="${esc(l[2])}" disabled></div>
+     <div class="f"><label>Stage</label><select onchange="setLead(${i},6,this.value)">${stagesFor(l[3]).map(s=>`<option ${s===l[6]?'selected':''}>${s}</option>`).join('')}</select></div>
+     <div class="f"><label>Handled by</label><select onchange="setLead(${i},7,this.value)">${STAFF.map(s=>`<option ${s===l[7]?'selected':''}>${s}</option>`).join('')}</select></div>
+     <div class="f full"><label>What they want</label><input value="${esc(l[4])}" onchange="LEADS[${i}][4]=this.value"></div>
+     <div class="f"><label>Deal value (৳)</label><input type="number" value="${l[5]}" onchange="LEADS[${i}][5]=+this.value"></div>
+     <div class="f"><label>Next follow-up</label><input value="${esc(l[8])}" onchange="LEADS[${i}][8]=this.value"></div>
+   </div>
+   ${l[12] ? `<div style="margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--card2)">
+     <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><span class="ms" style="color:var(--accent)">factory</span><b>Factory details (GM Traders)</b><span class="spacer"></span>${sPill(l[12].sample)}</div>
+     <div class="form">
+       ${[['area','Factory area'],['merch','Merchandiser'],['mphone','Merchandiser phone'],['buyer','Buyer / brand'],['style','Style no.']].map(([k,t])=>`<div class="f"><label>${t}</label><input value="${esc(l[12][k])}" onchange="LEADS[${i}][12].${k}=this.value"></div>`).join('')}
+       <div class="f"><label>Product</label><select onchange="LEADS[${i}][12].product=this.value">${B2B_PRODUCTS.map(p=>`<option ${p===l[12].product?'selected':''}>${p}</option>`).join('')}</select></div>
+     </div>
+     <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap"><button class="btn sm primary" onclick="sampleFromLead(${i})"><span class="ms">science</span>Send sample</button><button class="btn sm" onclick="closeModal();go('b2b',{b2bTab:'samples'})"><span class="ms">open_in_new</span>Sample tracker</button></div>
+   </div>` : ''}
+   <div class="f" style="margin-top:14px"><label>Add a note</label><div style="display:flex;gap:6px"><input id="ldNote" class="in" placeholder="e.g. Customer wants sample first"><button class="btn primary" onclick="addNote(${i})">Add</button></div></div>
+   <div class="hist" style="margin-top:14px">${l[10].map(h=>`<div><b>${esc(h.t)}</b><div class="muted small">${h.w} · ${fmt(h.d)}</div></div>`).join('')}</div>`); }
+function setLead(i,k,v){ const l=LEADS[i], old=l[k]; l[k]=v; l[10].unshift({d:iso(TODAY),t:(k===6?'Stage: '+old+' → '+v:'Given to '+v),w:'You'});
+  if(k===6&&v==='Lost'){ closeModal(); lostModal(i); return; }
+  if(k===6&&v==='Repeat customer'&&l[12]) addAccountFromLead(i); toast('Saved ✓'); render(); leadDrawer(i); }
+function addNote(i){ const t=$('#ldNote').value.trim(); if(!t) return; LEADS[i][10].unshift({d:iso(TODAY),t,w:'You'}); leadDrawer(i); }
+function lostModal(i){ openModal(`<h3>Why was this lead lost?</h3><p class="small muted" style="margin-top:0">A reason is needed so the "Why we lost" report is correct.</p>
+  <div class="f"><select id="lostR" class="in">${REP.month.lost.map(r=>`<option>${r[0]}</option>`).join('')}</select></div>
+  <div style="display:flex;justify-content:flex-end;margin-top:14px"><button class="btn primary" onclick="LEADS[${i}][10].unshift({d:iso(TODAY),t:'Lost — '+$('#lostR').value,w:'You'});closeModal();toast('Marked lost');render()">Save</button></div>`); }
+function createOrder(i){ const l=LEADS[i], id='GM-'+(1041+orders.length);
+  orders.push({ id, name:l[0], company:l[1], phone:l[9], biz:l[3], staff:l[7], hot:false, product:'T-shirt', print:'Sublimation', fabric:'', colour:'', qty:100,
+    sizes:{S:0,M:0,L:0,XL:0,XXL:0,'3XL':0}, players:[], deadline:iso(new Date(TODAY.getTime()+14*86400000)), address:'', note:l[4],
+    quote:{items:[{name:l[4],qty:100,price:Math.round((l[5]||30000)/100)}], discount:0, vat:5, valid:7, advancePct:50, status:'Draft', sent:null},
+    design:{status:'None', versions:[]}, payments:[], production:false, history:[{d:iso(TODAY),t:'Order created from lead',w:'You'}] });
+  l[10].unshift({d:iso(TODAY),t:'Order '+id+' created',w:'You'}); closeModal(); toast('Order '+id+' created ✓'); go('order',{id,tab:'details'}); }
+
+/* ---------------- PIPELINE ---------------- */
+function viewPipe(){
+  const tr = S.biz==='GM TRADERS', L=filteredLeads().filter(l=>tr || l[3]!=='GM TRADERS'), ST=tr?B2B_STAGES:SET.stages;
+  return (tr ? `<div class="warn green" style="margin:0 0 12px"><span class="ms">factory</span>GM Traders B2B pipeline: New → Visited → Sample sent → Buyer approved → Order → Repeat customer</div>`
+    : `<div class="warn amber" style="margin:0 0 12px;cursor:pointer" onclick="S.biz='GM TRADERS';$('#bizFilter').value='GM TRADERS';render()"><span class="ms">factory</span>GM TRADERS uses its own factory (B2B) stages — click here to see its pipeline.</div>`) +
+  `<div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:10px;align-items:flex-start">${ST.map(s=>{ const C=L.filter(l=>l[6]===s), sum=C.reduce((a,l)=>a+l[5],0);
+    return `<div style="min-width:230px;flex:1;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px" ondragover="event.preventDefault();this.style.outline='2px dashed var(--accent)'" ondragleave="this.style.outline=''" ondrop="dropLead(event,'${s}')">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><b><span class="pill ${ST_COL[s]||'p-grey'}">${s}</span></b><span class="muted small">${C.length}</span></div>
+      <div class="small muted" style="margin-bottom:8px">${tk(sum)}</div>
+      ${C.map(l=>{const i=LEADS.indexOf(l);return `<div draggable="true" ondragstart="event.dataTransfer.setData('text',${i})" onclick="leadDrawer(${i})" class="card" style="padding:10px;margin-bottom:8px;cursor:grab">
+        <div style="display:flex;justify-content:space-between;gap:6px"><b style="font-size:13px">${esc(l[0])}</b>${sav(l[7])}</div>
+        <div class="small muted" style="margin:4px 0 8px">${esc(l[4])}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center" class="small"><span><span class="ms" style="font-size:14px;color:var(--muted)">${srcIcon(l[2])}</span> ${tk(l[5])}</span><span style="${/late/.test(l[8])?'color:var(--red);font-weight:600':'color:var(--muted)'}">${l[8]}</span></div></div>`}).join('')}
+    </div>`}).join('')}</div>`;
+}
+function dropLead(e,s){ e.preventDefault(); const i=+e.dataTransfer.getData('text'); if(isNaN(i)||LEADS[i][6]===s) return render();
+  const old=LEADS[i][6]; LEADS[i][6]=s; LEADS[i][10].unshift({d:iso(TODAY),t:'Stage: '+old+' → '+s,w:'You'});
+  if(s==='Lost'){ render(); return lostModal(i); } toast(LEADS[i][0]+' moved to '+s); render(); }
+
+/* ---------------- INBOX ---------------- */
+let CHATS = [
+  {n:'Karim Uddin', ch:'WhatsApp', t:'10:07', unread:2, lead:0, msgs:[['in','Assalamu alaikum, Eid er jonno 500 sublimation t-shirt lagbe.'],['out','Walaikum assalam! Design pathan, 15 min e price dicchi.'],['in','Design ready. Delivery koto dine?']]},
+  {n:'Ayesha Siddiqa', ch:'Facebook', t:'11:21', unread:1, lead:null, msgs:[['in','Hi, do you print team jerseys? We need 25 for a university tournament.'],['in','Need by 10 October.']]},
+  {n:'Rafi Photography', ch:'Instagram', t:'12:03', unread:1, lead:null, msgs:[['in','Saw your reel on DTF prints 🔥 Can you do 100 hoodies with my logo?']]},
+  {n:'+880 1912-440011', ch:'WhatsApp', t:'12:40', unread:1, lead:null, msgs:[['in','Heat transfer label minimum order koto?']]},
+  {n:'Tahmina Chowdhury', ch:'TikTok', t:'Yesterday', unread:0, lead:4, msgs:[['in','Hijab print sample dite parben?'],['out','Ji, 3 ta sample free. Address den please.']]},
+];
+function viewInbox(){
+  const cur = S.chat ?? 0, c = CHATS[cur];
+  return `<div class="card" style="padding:0;display:grid;grid-template-columns:minmax(220px,300px) 1fr;min-height:520px;overflow:hidden" id="inboxGrid">
+    <div style="border-right:1px solid var(--line);overflow-y:auto">${CHATS.map((x,i)=>`<div class="fu" style="cursor:pointer;${i===cur?'background:var(--accent-soft)':''}" onclick="S.chat=${i};CHATS[${i}].unread=0;render()">
+      ${sav(x.n.replace(/[^A-Za-z]/,'#'))}<div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between"><b style="font-size:13px">${esc(x.n)}</b><small class="muted">${x.t}</small></div>
+      <div class="small muted" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(x.msgs[x.msgs.length-1][1])}</div>
+      <div style="display:flex;justify-content:space-between;margin-top:3px"><span class="small muted"><span class="ms" style="font-size:13px">${srcIcon(x.ch)}</span> ${x.ch}</span>${x.unread?`<span class="cnt" style="background:var(--accent);color:#fff;border-radius:9px;padding:0 6px;font-size:11px">${x.unread}</span>`:''}</div></div></div>`).join('')}</div>
+    <div style="display:flex;flex-direction:column;min-width:0">
+      <div style="padding:12px 16px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center;flex-wrap:wrap"><b>${esc(c.n)}</b><span class="pill p-grey">${c.ch}</span><span class="spacer"></span>
+        ${c.lead!=null?`<button class="btn sm" onclick="leadDrawer(${c.lead})"><span class="ms">person</span>Open lead</button>`:`<button class="btn sm primary" onclick="chatToLead(${cur})"><span class="ms">person_add</span>Save as lead</button>`}</div>
+      <div style="flex:1;padding:16px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;background:var(--card2)">${c.msgs.map(m=>`<div style="max-width:75%;padding:9px 12px;border-radius:12px;font-size:13px;${m[0]==='out'?'align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:3px':'align-self:flex-start;background:var(--card);border:1px solid var(--line);border-bottom-left-radius:3px'}">${esc(m[1])}</div>`).join('')}</div>
+      <div style="padding:10px;border-top:1px solid var(--line);display:flex;gap:6px;align-items:center">
+        <select class="in" style="width:auto" onchange="if(this.value){$('#chatIn').value=SET.tpl[this.value][1];this.value=''}"><option value="">⚡ Template</option>${SET.tpl.map((t,i)=>`<option value="${i}">${esc(t[0])}</option>`).join('')}</select>
+        <input id="chatIn" class="in" placeholder="Type a reply…" onkeydown="if(event.key==='Enter')sendChat(${cur})"><button class="btn primary" onclick="sendChat(${cur})"><span class="ms">send</span></button></div>
+    </div></div>
+    <style>@media (max-width:760px){#inboxGrid{grid-template-columns:1fr!important}#inboxGrid>div:first-child{max-height:240px;border-right:0!important;border-bottom:1px solid var(--line)}}</style>`;
+}
+function sendChat(i){ const v=$('#chatIn').value.trim(); if(!v) return; CHATS[i].msgs.push(['out',v]); CHATS[i].t='Now'; render(); }
+function chatToLead(i){ const c=CHATS[i];
+  const isLabel=/label|tag|sticker/i.test(c.msgs.map(m=>m[1]).join(' '));
+  LEADS.push([c.n,'—',c.ch,isLabel?'GM TRADERS':BUSINESSES[c.ch==='Facebook'||c.ch==='Instagram'?5:0],c.msgs[0][1].slice(0,60),0,'New',STAFF[i%STAFF.length],'Today',/\d/.test(c.n)?c.n:'',[{d:iso(TODAY),t:'Saved from '+c.ch+' chat',w:'You'}],Date.now(),isLabel?{area:'',merch:'',mphone:c.n,buyer:'',style:'',product:'Heat transfer label',sample:'Not yet'}:null]);
+  c.lead=LEADS.length-1; if(isLabel) LEADS[c.lead][7]='Arif'; toast('Saved as lead ✓'+(isLabel?' — GM TRADERS (Arif)':'')); render(); }
+function addLeadModal(){
+  openModal(`<h3>Add New Lead <button class="iconbtn" onclick="closeModal()"><span class="ms">close</span></button></h3>
+   <div class="form"><div class="f"><label>Name *</label><input id="nlName"></div><div class="f"><label>Phone *</label><input id="nlPhone" placeholder="01XXXXXXXXX"></div>
+   <div class="f"><label>Company</label><input id="nlCo"></div><div class="f"><label>Came from</label><select id="nlSrc">${SOURCES.map(s=>`<option>${s}</option>`).join('')}</select></div>
+   <div class="f"><label>Business</label><select id="nlBiz" onchange="$('#nlB2B').style.display=this.value==='GM TRADERS'?'grid':'none'">${BUSINESSES.map(b=>`<option>${b}</option>`).join('')}</select></div><div class="f"><label>Assigned to</label><select id="nlStaff">${STAFF.map(b=>`<option>${b}</option>`).join('')}</select></div>
+   <div class="f full"><label>What they want</label><input id="nlWant"></div><div class="f"><label>Deal value (৳)</label><input id="nlVal" type="number"></div><div class="f"><label>First follow-up</label><input type="date" value="${iso(TODAY)}"></div></div>
+   <div class="form" id="nlB2B" style="display:none;margin-top:12px;padding:12px;border:1px dashed var(--line);border-radius:10px">
+     <div class="f full small"><b>GM Traders · factory details</b></div>
+     <div class="f"><label>Factory area</label><input id="nlArea" placeholder="e.g. Fatullah, Narayanganj"></div><div class="f"><label>Merchandiser</label><input id="nlMerch"></div>
+     <div class="f"><label>Buyer / brand</label><input id="nlBuyer"></div><div class="f"><label>Style no.</label><input id="nlStyle"></div>
+     <div class="f full"><label>Product</label><select id="nlProd">${B2B_PRODUCTS.map(p=>`<option>${p}</option>`).join('')}</select></div></div>
+   <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveLead()"><span class="ms">save</span>Save lead</button></div>`);
+}
+function saveLead(){ const n=$('#nlName').value.trim(), p=$('#nlPhone').value.trim(); if(!n||!p) return toast('Name and phone are required');
+  const biz=$('#nlBiz').value, b2b = biz==='GM TRADERS' ? {area:$('#nlArea').value, merch:$('#nlMerch').value||n, mphone:p, buyer:$('#nlBuyer').value, style:$('#nlStyle').value, product:$('#nlProd').value, sample:'Not yet'} : null;
+  LEADS.push([n,$('#nlCo').value||'—',$('#nlSrc').value,biz,$('#nlWant').value||'—',+$('#nlVal').value||0,'New',$('#nlStaff').value,'Today',p,[{d:iso(TODAY),t:'Lead added by hand',w:'You'}],Date.now(),b2b]);
+  closeModal(); toast('Lead saved ✓'); go('leads'); }
+$('#searchBox').addEventListener('keydown', e => { if(e.key==='Enter'){ go('leads'); } });
+
+/* ---------------- ORDERS LIST ---------------- */
+function viewOrders(){
+  const L = list();
+  const open = L.filter(o=>!o.production);
+  const due7 = L.filter(o=>days(o.deadline)>=0 && days(o.deadline)<=7).length;
+  const waitD = L.filter(o=>o.design.status==='Waiting'||o.design.status==='Change requested').length;
+  const advDue = open.reduce((a,o)=>a+Math.max(0,qTotals(o).adv-paid(o)),0);
+  const risky = L.filter(o=>risk(o).cls==='red');
+  return `
+  <div class="grid kpis">
+    <div class="card kpi"><div class="l"><span class="ms">inventory_2</span>Orders being prepared</div><div class="v">${open.length}</div><div class="small muted">${L.length-open.length} already in production</div></div>
+    <div class="card kpi"><div class="l"><span class="ms">local_shipping</span>Delivery in next 7 days</div><div class="v" style="color:var(--amber)">${due7}</div><div class="small muted">${risky.length} at risk of being late</div></div>
+    <div class="card kpi"><div class="l"><span class="ms">palette</span>Designs waiting customer</div><div class="v">${waitD}</div><div class="small muted">Approve before printing</div></div>
+    <div class="card kpi"><div class="l"><span class="ms">payments</span>Advance still to collect</div><div class="v" style="color:var(--red)">${tk(advDue)}</div><div class="small muted">Across ${open.filter(o=>paid(o)<qTotals(o).adv-1).length} orders</div></div>
+  </div>
+  ${risky.length?`<div class="warn red" style="margin-top:14px"><span class="ms">warning</span><div><b>${risky.map(o=>esc(o.name)).join(', ')}</b> — not enough days left to produce on time. Talk to the customer about a new date or split delivery.</div></div>`:''}
+  <div class="card" style="margin-top:14px;padding:0">
+    <div style="padding:14px 16px 4px;display:flex;align-items:center;gap:10px"><h3 style="margin:0">All orders</h3><span class="muted small">Click an order to open it</span></div>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Customer</th><th>Business</th><th>What they ordered</th><th class="r">Qty</th><th>Delivery</th><th>Quotation</th><th>Design</th><th>Advance</th><th>Ready?</th></tr></thead>
+      <tbody>${L.map(o=>{ const t=qTotals(o), p=paid(o), pct=Math.min(100,t.total?p/t.total*100:0), c=checks(o);
+        return `<tr class="click" onclick="go('order',{id:'${o.id}',tab:'details'})">
+          <td><div class="who"><span class="av">${initials(o.name)}</span><div><b>${esc(o.name)} ${o.hot?'<span class="ms" style="font-size:15px;color:var(--red)">local_fire_department</span>':''}</b><small>${o.id} · ${esc(o.company)}</small></div></div></td>
+          <td class="small">${o.biz}</td>
+          <td><div>${esc(o.product)}</div><small class="muted">${esc(o.print)}</small></td>
+          <td class="r"><b>${o.qty}</b></td>
+          <td>${dlPill(o)}<div class="small muted" style="margin-top:3px">${fmt(o.deadline)}</div></td>
+          <td>${qPill(o.quote.status)}<div class="small muted" style="margin-top:3px">${tk(t.total)}</div></td>
+          <td>${dPill(o.design.status)}</td>
+          <td style="min-width:110px"><div class="bar"><i style="width:${pct}%"></i></div><div class="small muted" style="margin-top:4px">${tk(p)} paid</div></td>
+          <td>${o.production?'<span class="pill p-green"><span class="ms" style="font-size:14px">factory</span>Printing</span>':`<div class="checks">${c.map(x=>`<span class="chk ${x.ok?'ok':'no'}" title="${x.label}: ${esc(x.sub)}"><span class="ms" style="font-size:15px">${x.ok?'check':'remove'}</span></span>`).join('')}</div>`}</td>
+        </tr>`}).join('')}</tbody>
+    </table></div>
+  </div>
+  <p class="small muted" style="margin-top:10px">Ready? = the 4 checks before printing: order details · quotation accepted · design approved · advance paid.</p>`;
+}
+
+/* ---------------- ORDER WORKSPACE ---------------- */
+function viewOrder(){
+  const o = byId(S.id); if(!o) return viewOrders();
+  $('#title').textContent = o.id;
+  const c = checks(o), allOk = c.every(x=>x.ok);
+  const tabs = [['details','checkroom','Order details'],['quote','request_quote','Quotation'],['design','palette','Design approval'],['pay','payments','Payments'],['history','history','History']];
+  return `
+  <button class="btn sm ghost" onclick="go('orders')" style="margin-bottom:12px"><span class="ms">arrow_back</span>All orders</button>
+  <div class="ws-head">
+    <span class="av">${initials(o.name)}</span>
+    <div style="flex:1;min-width:200px"><h2>${esc(o.name)} ${o.hot?'<span class="ms" style="color:var(--red)">local_fire_department</span>':''}</h2>
+      <div class="muted small" style="margin-top:3px">${esc(o.company)} · ${o.biz} · Handled by <b style="color:var(--text)">${o.staff}</b> · ${esc(o.phone)}</div></div>
+    ${dlPill(o)}
+  </div>
+  <div class="ready">
+    ${c.map((x,i)=>`<div class="rstep ${x.ok?'ok':'no'}" onclick="S.tab='${['details','quote','design','pay'][i]}';render()"><span class="ms">${x.ok?'check_circle':'radio_button_unchecked'}</span><div><b>${i+1}. ${x.label}</b><small>${esc(x.sub)}</small></div></div>`).join('')}
+    ${o.production ? `<span class="pill p-green" style="padding:9px 14px;font-size:13px"><span class="ms">factory</span>In production</span>`
+      : `<button class="btn green" ${allOk?'':'disabled'} onclick="toProduction('${o.id}')" title="${allOk?'':'Complete all 4 steps first'}"><span class="ms">factory</span>Send to production</button>`}
+  </div>
+  <div class="tabs">${tabs.map(t=>`<button class="tab ${S.tab===t[0]?'active':''}" onclick="S.tab='${t[0]}';render()"><span class="ms">${t[1]}</span>${t[2]}</button>`).join('')}</div>
+  ${({details:tabDetails, quote:tabQuote, design:tabDesign, pay:tabPay, history:tabHistory})[S.tab](o)}`;
+}
+function toProduction(id){ const o=byId(id); o.production=true; hist(o,'Sent to production — job card created'); toast('Order sent to production ✓'); render(); }
+function setF(id, key, val, num){ const o=byId(id); o[key] = num ? +val : val; render(); }
+
+/* ---- tab: details ---- */
+function tabDetails(o){
+  const r = risk(o), st = sizeTotal(o), team = isTeam(o);
+  const sel = (key, opts) => `<select onchange="setF('${o.id}','${key}',this.value)">${opts.map(x=>`<option ${x===o[key]?'selected':''}>${x}</option>`).join('')}</select>`;
+  const inp = (key, type='text') => `<input type="${type}" value="${esc(o[key])}" onchange="setF('${o.id}','${key}',this.value,${type==='number'})">`;
+  const nums = {}; o.players.forEach(p=>{ nums[p.no]=(nums[p.no]||0)+1; });
+  const dups = Object.keys(nums).filter(n=>nums[n]>1);
+  const ringCol = r.cls==='red'?'var(--red)':r.cls==='amber'?'var(--amber)':'var(--green)';
+  return `
+  <div class="two">
+    <div class="grid">
+      <div class="card"><h3><span class="ms">checkroom</span>What the customer wants</h3>
+        <div class="form">
+          <div class="f"><label>Product</label>${sel('product',PRODUCTS)}</div>
+          <div class="f"><label>Print method</label>${sel('print',PRINTS)}</div>
+          <div class="f"><label>Fabric</label>${inp('fabric')}</div>
+          <div class="f"><label>Colour</label>${inp('colour')}</div>
+          <div class="f"><label>Total quantity (pcs)</label>${inp('qty','number')}</div>
+          <div class="f"><label>Delivery date</label>${inp('deadline','date')}</div>
+          <div class="f full"><label>Delivery address</label>${inp('address')}</div>
+          <div class="f full"><label>Special instructions</label><textarea rows="2" onchange="setF('${o.id}','note',this.value)">${esc(o.note)}</textarea></div>
+        </div>
+      </div>
+      <div class="card"><h3><span class="ms">straighten</span>Size breakdown <span class="muted small" style="font-weight:400;margin-left:auto">Total ${st} / ${o.qty}</span></h3>
+        <div class="sizes">${SIZES.map(s=>`<div class="f"><label style="text-align:center">${s}</label><input type="number" min="0" value="${o.sizes[s]||0}" onchange="setSize('${o.id}','${s}',this.value)"></div>`).join('')}</div>
+        ${st!==+o.qty ? `<div class="warn amber"><span class="ms">error</span>Sizes add up to ${st} but the order is ${o.qty} pcs — ${st<o.qty? (o.qty-st)+' pcs have no size yet':'remove '+(st-o.qty)+' pcs'}.</div>` : `<div class="warn green"><span class="ms">check_circle</span>Sizes match the order quantity.</div>`}
+      </div>
+      ${team ? `<div class="card" style="padding:0">
+        <div style="padding:16px 16px 6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><h3 style="margin:0"><span class="ms">badge</span>Names & numbers</h3>
+          <span class="muted small">${o.players.length} entered</span><span class="spacer"></span>
+          <button class="btn sm" onclick="pasteModal('${o.id}')"><span class="ms">content_paste</span>Paste from Excel</button>
+          <button class="btn sm" onclick="addPlayer('${o.id}')"><span class="ms">add</span>Add player</button>
+          ${o.players.length?`<button class="btn sm" onclick="sizesFromPlayers('${o.id}')" title="Count sizes from this list"><span class="ms">sync</span>Use these sizes</button>`:''}</div>
+        <div style="padding:0 16px">
+          ${!/kit/i.test(o.product) && o.players.length<o.qty ? `<div class="warn amber"><span class="ms">error</span>${o.qty-o.players.length} names still missing (order is ${o.qty} pcs).</div>`:''}
+          ${dups.length ? `<div class="warn red"><span class="ms">warning</span>Number ${dups.join(', ')} is used twice — check with the customer.</div>`:''}
+        </div>
+        <div class="tablewrap" style="max-height:340px;overflow:auto;margin-top:6px"><table>
+          <thead><tr><th>#</th><th>Name on back</th><th>Number</th><th>Size</th><th></th></tr></thead>
+          <tbody>${o.players.map((p,i)=>`<tr>
+            <td class="muted small">${i+1}</td>
+            <td><input class="cellin" value="${esc(p.name)}" onchange="setPlayer('${o.id}',${i},'name',this.value.toUpperCase())"></td>
+            <td style="width:90px"><input class="cellin" type="number" value="${p.no}" style="${dups.includes(String(p.no))?'color:var(--red);font-weight:700':''}" onchange="setPlayer('${o.id}',${i},'no',+this.value)"></td>
+            <td style="width:90px"><select class="cellin" onchange="setPlayer('${o.id}',${i},'size',this.value)">${SIZES.map(s=>`<option ${s===p.size?'selected':''}>${s}</option>`).join('')}</select></td>
+            <td style="width:40px"><button class="iconbtn" onclick="delPlayer('${o.id}',${i})"><span class="ms">delete</span></button></td></tr>`).join('') || `<tr><td colspan="5" class="muted" style="text-align:center;padding:20px">No names yet. Paste the list the customer sent on WhatsApp.</td></tr>`}</tbody>
+        </table></div>
+      </div>` : ''}
+    </div>
+    <div class="grid">
+      <div class="card"><h3><span class="ms">local_shipping</span>Delivery deadline</h3>
+        <div class="dl">
+          <div class="ring" style="border:4px solid ${ringCol}"><div><b style="color:${ringCol}">${Math.max(r.left,0)}</b><small class="muted">days left</small></div></div>
+          <div><div style="font-weight:700;font-size:15px">${fmt(o.deadline)} · <span style="color:${ringCol}">${r.label}</span></div>
+            <div class="small muted" style="margin-top:4px">${o.qty} pcs of ${esc(o.print.toLowerCase())} need about <b style="color:var(--text)">${r.need} days</b> (printing + finishing + delivery).</div></div>
+        </div>
+        ${r.cls==='red'&&!o.production?`<div class="warn red"><span class="ms">warning</span>Not enough time. Ask the customer to move the date by ${r.need-r.left} days, or deliver part of the order first.</div>`
+         : r.cls==='amber'&&!o.production?`<div class="warn amber"><span class="ms">schedule</span>Tight. Get design approval and advance today so printing can start tomorrow.</div>`
+         : `<div class="warn green"><span class="ms">check_circle</span>Enough time to deliver.</div>`}
+      </div>
+      <div class="card"><h3><span class="ms">receipt_long</span>Order summary</h3>
+        <table style="font-size:13px"><tbody>
+          <tr><td class="muted">Product</td><td class="r">${esc(o.product)}</td></tr>
+          <tr><td class="muted">Print</td><td class="r">${esc(o.print)}</td></tr>
+          <tr><td class="muted">Fabric / colour</td><td class="r">${esc(o.fabric)} · ${esc(o.colour)}</td></tr>
+          <tr><td class="muted">Quotation</td><td class="r">${qPill(o.quote.status)} ${tk(qTotals(o).total)}</td></tr>
+          <tr><td class="muted">Design</td><td class="r">${dPill(o.design.status)}</td></tr>
+          <tr><td class="muted" style="border:0">Paid</td><td class="r" style="border:0">${tk(paid(o))}</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>`;
+}
+function setSize(id,s,v){ byId(id).sizes[s]=Math.max(0,+v||0); render(); }
+function setPlayer(id,i,k,v){ byId(id).players[i][k]=v; render(); }
+function delPlayer(id,i){ byId(id).players.splice(i,1); render(); }
+function addPlayer(id){ const o=byId(id); const n=Math.max(0,...o.players.map(p=>+p.no||0))+1; o.players.push({name:'NEW PLAYER',no:n,size:'M'}); render(); }
+function sizesFromPlayers(id){ const o=byId(id); SIZES.forEach(s=>o.sizes[s]=0); o.players.forEach(p=>o.sizes[p.size]=(o.sizes[p.size]||0)+1); if(!/kit/i.test(o.product)) o.qty=o.players.length; toast('Size breakdown updated from the list'); render(); }
+function pasteModal(id){
+  openModal(`<h3>Paste names from Excel / WhatsApp <button class="iconbtn" onclick="closeModal()"><span class="ms">close</span></button></h3>
+   <p class="small muted" style="margin-top:0">One player per line: <b>Name, Number, Size</b>. Tabs from Excel work too.</p>
+   <textarea id="pasteBox" class="in" rows="8" placeholder="SHAKIL, 19, L&#10;RUBEL, 20, M&#10;ARIF	21	XL"></textarea>
+   <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="doPaste('${id}')"><span class="ms">playlist_add</span>Add to list</button></div>`);
+}
+function doPaste(id){
+  const o=byId(id); let n=0;
+  $('#pasteBox').value.split(/\n/).forEach(l=>{ const p=l.split(/\t|,/).map(x=>x.trim()).filter(Boolean); if(!p.length) return;
+    const size = SIZES.includes((p[2]||'').toUpperCase()) ? p[2].toUpperCase() : 'M';
+    o.players.push({name:p[0].toUpperCase(), no:+p[1]||'', size}); n++; });
+  closeModal(); toast(n+' players added'); render();
+}
+
+/* ---- tab: quotation ---- */
+function tabQuote(o){
+  const q=o.quote, t=qTotals(o), si=QSTEPS.indexOf(q.status);
+  return `
+  <div class="timeline">${QSTEPS.map((s,i)=>`${i?'<span class="tl-line"></span>':''}<span class="tl ${i<=si?'done':i===si+1?'cur':''}"><span class="dot">${i<=si?'✓':i+1}</span>${s}</span>`).join('')}</div>
+  <div class="two">
+    <div class="grid">
+      <div class="card" style="padding:0">
+        <div style="padding:16px 16px 4px"><h3 style="margin:0"><span class="ms">list_alt</span>Items</h3></div>
+        <div class="tablewrap"><table>
+          <thead><tr><th>Item</th><th class="r">Qty</th><th class="r">Unit price ৳</th><th class="r">Amount</th><th></th></tr></thead>
+          <tbody>${q.items.map((it,i)=>`<tr>
+            <td><input class="cellin" value="${esc(it.name)}" onchange="setItem('${o.id}',${i},'name',this.value)"></td>
+            <td style="width:80px"><input class="cellin r" type="number" value="${it.qty}" onchange="setItem('${o.id}',${i},'qty',+this.value)"></td>
+            <td style="width:110px"><input class="cellin r" type="number" value="${it.price}" onchange="setItem('${o.id}',${i},'price',+this.value)"></td>
+            <td class="r" style="white-space:nowrap"><b>${tk(it.qty*it.price)}</b></td>
+            <td style="width:40px"><button class="iconbtn" onclick="delItem('${o.id}',${i})"><span class="ms">delete</span></button></td></tr>`).join('')}</tbody>
+        </table></div>
+        <div style="padding:10px 16px 14px"><button class="btn sm" onclick="addItem('${o.id}')"><span class="ms">add</span>Add item</button></div>
+      </div>
+      <div class="card"><h3><span class="ms">tune</span>Terms</h3>
+        <div class="form">
+          <div class="f"><label>Discount (৳)</label><input type="number" value="${q.discount}" onchange="setQ('${o.id}','discount',+this.value)"></div>
+          <div class="f"><label>VAT %</label><input type="number" value="${q.vat}" onchange="setQ('${o.id}','vat',+this.value)"></div>
+          <div class="f"><label>Price valid for (days)</label><input type="number" value="${q.valid}" onchange="setQ('${o.id}','valid',+this.value)"></div>
+          <div class="f"><label>Advance needed (%)</label><input type="number" value="${q.advancePct}" onchange="setQ('${o.id}','advancePct',+this.value)"></div>
+        </div>
+      </div>
+      <div class="card"><h3><span class="ms">send</span>Send & track</h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn primary" onclick="sendQuote('${o.id}')"><span class="ms">chat</span>${q.status==='Draft'?'Send on WhatsApp':'Send again'}</button>
+          <button class="btn" onclick="printQuote('${o.id}')"><span class="ms">picture_as_pdf</span>Download PDF</button>
+          ${q.status!=='Accepted'&&q.status!=='Draft'?`<button class="btn" onclick="acceptQuote('${o.id}')"><span class="ms">thumb_up</span>Customer accepted</button>`:''}
+        </div>
+        <p class="small muted" style="margin:10px 0 0">${q.sent?`Sent ${fmt(q.sent)} · valid till ${fmt(iso(new Date(D(q.sent).getTime()+q.valid*86400000)))}`:'Not sent yet.'} ${q.status==='Viewed'?'· Customer has opened it but not replied — good time to follow up.':''}</p>
+      </div>
+    </div>
+    <div>${quotePaper(o)}</div>
+  </div>`;
+}
+function quotePaper(o){
+  const q=o.quote, t=qTotals(o);
+  return `<div class="paper">
+    <div class="ph"><div><h4>${o.biz}</h4><div style="color:#687089;margin-top:3px">${o.biz==='GM TRADERS'?'56 S M Maleh Road, River View Complex, Tanbazar, Narayanganj':'GM Group · Dhaka, Bangladesh'}</div></div>
+      <div style="text-align:right"><b style="font-size:15px">QUOTATION</b><div style="color:#687089">Q-${o.id.slice(3)}</div><div style="color:#687089">${fmt(q.sent||iso(TODAY))} 2026</div></div></div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:12px;gap:10px"><div><div style="color:#687089;font-size:10.5px">TO</div><b>${esc(o.name)}</b><div>${esc(o.company)}</div><div>${esc(o.phone)}</div></div>
+      <div style="text-align:right"><div style="color:#687089;font-size:10.5px">DELIVERY</div><b>${fmt(o.deadline)} 2026</b><div>${esc(o.address)}</div></div></div>
+    <table><thead><tr><th>Item</th><th class="r">Qty</th><th class="r">Rate</th><th class="r">Amount</th></tr></thead>
+      <tbody>${q.items.map(i=>`<tr><td>${esc(i.name)}</td><td class="r">${i.qty}</td><td class="r">${tk(i.price)}</td><td class="r">${tk(i.qty*i.price)}</td></tr>`).join('')}</tbody></table>
+    <table style="margin-top:8px;width:60%;margin-left:40%"><tbody class="tot">
+      <tr><td>Subtotal</td><td class="r">${tk(t.sub)}</td></tr>
+      ${q.discount?`<tr><td>Discount</td><td class="r">− ${tk(q.discount)}</td></tr>`:''}
+      <tr><td>VAT ${q.vat}%</td><td class="r">${tk(t.vat)}</td></tr>
+      <tr class="grand"><td>Total</td><td class="r">${tk(t.total)}</td></tr>
+      <tr><td style="color:#5b45e0;font-weight:700">Advance ${q.advancePct}%</td><td class="r" style="color:#5b45e0;font-weight:700">${tk(t.adv)}</td></tr>
+    </tbody></table>
+    <div style="margin-top:14px;padding-top:10px;border-top:1px solid #e3e6ef;color:#687089;font-size:11px;line-height:1.55">
+      ${esc(o.product)} · ${esc(o.print)} · ${esc(o.fabric)}<br>Price valid for ${q.valid} days. Printing starts after design approval and ${q.advancePct}% advance.<br>Pay by bKash / Nagad / bank transfer.</div>
+  </div>`;
+}
+function setItem(id,i,k,v){ byId(id).quote.items[i][k]=v; render(); }
+function delItem(id,i){ byId(id).quote.items.splice(i,1); render(); }
+function addItem(id){ byId(id).quote.items.push({name:'New item',qty:1,price:0}); render(); }
+function setQ(id,k,v){ byId(id).quote[k]=v; render(); }
+function waText(o){ const t=qTotals(o);
+  return `Assalamu alaikum ${o.name.split(' ')[0]} bhai,\n\nApnar ${o.qty} pcs ${o.product.toLowerCase()} er quotation:\nTotal: ${tk(t.total)}\nAdvance (${o.quote.advancePct}%): ${tk(t.adv)}\nDelivery: ${fmt(o.deadline)}\n\nPDF: leads.gmgroup.com.bd/q/${o.id}\nPrice ${o.quote.valid} din valid.\n\n— ${o.staff}, ${o.biz}`; }
+function sendQuote(id){ const o=byId(id);
+  openModal(`<h3>Send quotation on WhatsApp <button class="iconbtn" onclick="closeModal()"><span class="ms">close</span></button></h3>
+    <p class="small muted" style="margin-top:0">To ${esc(o.name)} · ${esc(o.phone)}. The PDF link is attached automatically.</p>
+    <div class="wa">${esc(waText(o))}</div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px"><button class="btn" onclick="closeModal()">Cancel</button>
+    <button class="btn primary" onclick="confirmSend('${id}')"><span class="ms">send</span>Send</button></div>`); }
+function confirmSend(id){ const o=byId(id); if(o.quote.status==='Draft') o.quote.status='Sent'; o.quote.sent=iso(TODAY); hist(o,'Quotation sent on WhatsApp — '+tk(qTotals(o).total)); closeModal(); toast('Quotation sent (demo)'); render(); }
+function acceptQuote(id){ const o=byId(id); o.quote.status='Accepted'; hist(o,'Customer accepted the quotation','Customer'); toast('Quotation accepted ✓'); render(); }
+function printQuote(id){ $('#printArea').innerHTML = quotePaper(byId(id)); window.print(); }
+
+/* ---- tab: design ---- */
+function tabDesign(o){
+  const d=o.design, last=d.versions[d.versions.length-1];
+  return `
+  <div class="card" style="margin-bottom:14px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+    <div style="flex:1;min-width:220px"><b>Status:</b> ${dPill(d.status)}
+      <div class="small muted" style="margin-top:5px">${d.status==='None'?'Upload the first mockup, then send the approval link to the customer.':d.status==='Waiting'?'Link sent. Customer can approve or ask for changes from their phone.':d.status==='Change requested'?'Customer wants changes — upload a new version.':'Customer approved v'+last.v+'. This design will be printed.'}</div></div>
+    <button class="btn" onclick="newVersion('${o.id}')"><span class="ms">upload</span>Upload new version</button>
+    ${last && d.status!=='Approved' ? `<button class="btn" onclick="custView('${o.id}')"><span class="ms">smartphone</span>See customer view</button>
+      <button class="btn primary" onclick="sendDesign('${o.id}')"><span class="ms">link</span>Send approval link</button>`:''}
+  </div>
+  ${d.versions.length ? `<div class="mockups">${d.versions.slice().reverse().map(v=>`<div class="mock">
+    <div class="img">${mockImg(v)}</div>
+    <div class="b"><div style="display:flex;justify-content:space-between;align-items:center"><b>Version ${v.v}</b>${dPill(v.status)}</div>
+      ${v.comment?`<div class="small" style="margin-top:8px;padding:8px;border-radius:8px;background:var(--card2)"><span class="ms" style="font-size:15px;color:var(--muted)">chat_bubble</span> “${esc(v.comment)}”</div>`:''}</div>
+  </div>`).join('')}</div>`
+  : `<div class="card" style="text-align:center;padding:40px"><span class="ms" style="font-size:40px;color:var(--muted)">imagesmode</span><p class="muted">No mockup yet.</p><button class="btn primary" onclick="newVersion('${o.id}')"><span class="ms">upload</span>Upload first mockup</button></div>`}`;
+}
+function newVersion(id){ const o=byId(id);
+  openModal(`<h3>New design version <button class="iconbtn" onclick="closeModal()"><span class="ms">close</span></button></h3>
+    <div class="f"><label>Upload mockup image (JPG / PNG)</label><input type="file" id="mkFile" accept="image/*"></div>
+    <p class="small muted" style="text-align:center;margin:12px 0">— or make a quick sample mockup —</p>
+    <div class="form"><div class="f"><label>Shirt colour</label><input type="color" id="mkCol" value="#2563eb" style="height:38px;padding:3px"></div>
+      <div class="f"><label>Text / logo</label><input id="mkTxt" value="${esc(o.company.split(' ')[0].toUpperCase())}"></div>
+      <div class="f full"><label>Note for customer</label><input id="mkNote" placeholder="e.g. Logo made bigger as you asked"></div></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveVersion('${id}')"><span class="ms">save</span>Save version</button></div>`); }
+function saveVersion(id){ const o=byId(id), d=o.design, f=$('#mkFile').files[0];
+  const v={v:d.versions.length+1, color:$('#mkCol').value, text:$('#mkTxt').value||'LOGO', status:'Draft', comment:''};
+  const done=()=>{ d.versions.forEach(x=>{ if(x.status==='Waiting') x.status='Replaced'; }); d.versions.push(v); d.status='None'; hist(o,'Design v'+v.v+' uploaded'); closeModal(); toast('Version '+v.v+' saved — now send the approval link'); render(); };
+  if(f){ const r=new FileReader(); r.onload=e=>{ v.img=e.target.result; done(); }; r.readAsDataURL(f); } else done(); }
+function sendDesign(id){ const o=byId(id), d=o.design, v=d.versions[d.versions.length-1]; v.status='Waiting'; d.status='Waiting'; hist(o,'Approval link for design v'+v.v+' sent on WhatsApp'); toast('Approval link sent (demo)'); render(); }
+function custView(id){ const o=byId(id), v=o.design.versions[o.design.versions.length-1];
+  openModal(`<h3>What the customer sees <button class="iconbtn" onclick="closeModal()"><span class="ms">close</span></button></h3>
+   <div class="phone"><div class="bar2"><b>${o.biz}</b><div style="opacity:.8;font-size:11.5px">Design for ${esc(o.company)} · v${v.v}</div></div>
+    <div class="content"><div style="background:#fff;border-radius:10px;padding:10px;aspect-ratio:1/1">${mockImg(v)}</div>
+     <p style="font-size:12.5px;margin:10px 0">${o.qty} pcs · ${esc(o.print)} · delivery ${fmt(o.deadline)}</p>
+     <textarea id="cvNote" rows="2" placeholder="Any change? Write here (optional)"></textarea>
+     <div style="display:flex;gap:8px;margin-top:10px"><button class="btn" style="flex:1;justify-content:center;background:#fff;color:#dc2626;border-color:#f3c7c7" onclick="custAnswer('${id}',false)">Need changes</button>
+     <button class="btn" style="flex:1;justify-content:center;background:#15803d;color:#fff;border-color:#15803d" onclick="custAnswer('${id}',true)">Approve ✓</button></div></div></div>
+   <p class="small muted" style="text-align:center;margin-bottom:0">Try it — the answer updates the order.</p>`); }
+function custAnswer(id,ok){ const o=byId(id), d=o.design, v=d.versions[d.versions.length-1], note=$('#cvNote').value.trim();
+  v.status = ok?'Approved':'Change requested'; v.comment = note || (ok?'Approved':'Please change'); d.status=v.status;
+  hist(o, ok?'Customer approved design v'+v.v:'Customer asked for changes on v'+v.v+(note?': “'+note+'”':''),'Customer');
+  closeModal(); toast(ok?'Design approved by customer ✓':'Change request received'); render(); }
+
+/* ---- tab: payments ---- */
+function tabPay(o){
+  const t=qTotals(o), p=paid(o), bal=Math.max(0,t.total-p), pct=t.total?Math.min(100,p/t.total*100):0, advOk=p>=t.adv-1;
+  return `
+  <div class="grid pay-cards">
+    <div class="card kpi"><div class="l">Order total</div><div class="v">${tk(t.total)}</div><div class="small muted">From quotation</div></div>
+    <div class="card kpi"><div class="l">Advance needed (${o.quote.advancePct}%)</div><div class="v" style="color:var(--amber)">${tk(t.adv)}</div><div class="small ${advOk?'':'muted'}" style="${advOk?'color:var(--green)':''}">${advOk?'✓ Received':'Before printing starts'}</div></div>
+    <div class="card kpi"><div class="l">Received</div><div class="v" style="color:var(--green)">${tk(p)}</div><div class="small muted">${o.payments.length} payment${o.payments.length===1?'':'s'}</div></div>
+    <div class="card kpi"><div class="l">Balance due</div><div class="v" style="color:${bal?'var(--red)':'var(--green)'}">${tk(bal)}</div><div class="small muted">${bal?'Collect on delivery':'Fully paid'}</div></div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <div class="bigbar"><i style="width:${pct}%"></i><span class="mark" style="left:${o.quote.advancePct}%">Advance ${o.quote.advancePct}%</span></div>
+    <div class="small muted">${Math.round(pct)}% of the order paid</div>
+  </div>
+  <div class="two" style="margin-top:14px">
+    <div class="card" style="padding:0"><div style="padding:16px 16px 4px"><h3 style="margin:0"><span class="ms">receipt</span>Payments received</h3></div>
+      <div class="tablewrap"><table><thead><tr><th>Date</th><th>Method</th><th>Transaction ID</th><th class="r">Amount</th><th></th></tr></thead>
+      <tbody>${o.payments.map((x,i)=>`<tr><td>${fmt(x.d)}</td><td><span class="pill ${x.m==='bKash'?'p-red':x.m==='Nagad'?'p-amber':'p-blue'}">${x.m}</span></td><td class="small muted">${esc(x.trx)||'—'}</td><td class="r"><b>${tk(x.a)}</b></td>
+        <td><button class="btn sm ghost" onclick="printReceipt('${o.id}',${i})"><span class="ms">print</span>Receipt</button></td></tr>`).join('') || `<tr><td colspan="5" class="muted" style="text-align:center;padding:22px">No payment yet.</td></tr>`}</tbody></table></div></div>
+    <div class="card"><h3><span class="ms">add_card</span>Record a payment</h3>
+      <div class="form">
+        <div class="f"><label>Amount (৳)</label><input type="number" id="pAmt" value="${Math.round(Math.max(0,(advOk?bal:t.adv-p)))}"></div>
+        <div class="f"><label>Method</label><select id="pMet">${PAY_METHODS.map(m=>`<option>${m}</option>`).join('')}</select></div>
+        <div class="f"><label>Transaction ID</label><input id="pTrx" placeholder="e.g. BK8H2K91QZ"></div>
+        <div class="f"><label>Date</label><input type="date" id="pDate" value="${iso(TODAY)}"></div>
+      </div>
+      <button class="btn primary" style="margin-top:12px" onclick="addPay('${o.id}')"><span class="ms">check</span>Save payment</button>
+      <p class="small muted" style="margin-bottom:0">Amount is pre-filled with what is still due${advOk?'':' for the advance'}.</p>
+    </div>
+  </div>`;
+}
+function addPay(id){ const o=byId(id), a=+$('#pAmt').value; if(!a||a<=0) return toast('Enter an amount');
+  const m=$('#pMet').value; o.payments.push({d:$('#pDate').value||iso(TODAY), m, trx:$('#pTrx').value.trim(), a});
+  hist(o,'Payment '+tk(a)+' received via '+m); toast('Payment saved ✓'); render(); }
+function printReceipt(id,i){ const o=byId(id), x=o.payments[i];
+  $('#printArea').innerHTML = `<div class="paper" style="max-width:520px"><div class="ph"><div><h4>${o.biz}</h4><div style="color:#687089">GM Group</div></div><div style="text-align:right"><b>MONEY RECEIPT</b><div style="color:#687089">${o.id}-R${i+1}</div></div></div>
+   <p>Received from <b>${esc(o.name)}</b> (${esc(o.company)}) the amount of <b>${tk(x.a)}</b> via ${x.m}${x.trx?' (Trx: '+esc(x.trx)+')':''} on ${fmt(x.d)} 2026, for order ${o.id}.</p>
+   <p>Order total ${tk(qTotals(o).total)} · Paid so far ${tk(paid(o))} · Balance ${tk(Math.max(0,qTotals(o).total-paid(o)))}</p><p style="margin-top:40px;color:#687089">Signature ____________</p></div>`;
+  window.print(); }
+
+/* ---- tab: history ---- */
+function tabHistory(o){
+  return `<div class="card"><h3><span class="ms">history</span>Everything that happened</h3><div class="hist">${o.history.map(h=>`<div><b>${esc(h.t)}</b><div class="muted small">${h.w} · ${fmt(h.d)}</div></div>`).join('')}</div></div>`;
+}
+
+/* ---------------- CALENDAR ---------------- */
+function viewCalendar(){
+  const start = new Date(TODAY); start.setDate(start.getDate() - ((start.getDay()+6)%7)); // Monday
+  const L=list(), cells=[];
+  for(let i=0;i<28;i++){ const d=new Date(start); d.setDate(start.getDate()+i); const s=iso(d);
+    const evs=L.filter(o=>o.deadline===s);
+    cells.push(`<div class="day ${s===iso(TODAY)?'today':''} ${d<TODAY?'past':''}"><div class="n">${d.getDate()} ${d.getDate()===1||i===0?MON[d.getMonth()]:''}</div>
+      ${evs.map(o=>{const r=risk(o);return `<div class="ev p-${r.cls}" onclick="go('order',{id:'${o.id}',tab:'details'})" title="${esc(o.name)} · ${o.qty} pcs">${esc(o.name.split(' ')[0])} · ${o.qty}</div>`}).join('')}</div>`); }
+  return `<p class="muted" style="margin-top:0">Every order on its delivery date. Colour shows if there is enough time to produce it.
+    <span class="pill p-green">On track</span> <span class="pill p-amber">Tight</span> <span class="pill p-red">At risk</span></p>
+  <div class="cal">${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d=>`<div class="dh">${d}</div>`).join('')}${cells.join('')}</div>`;
+}
+
+/* ---------------- QUOTES LIST ---------------- */
+function viewQuotes(){
+  const L=list(), sum=s=>L.filter(o=>o.quote.status===s).reduce((a,o)=>a+qTotals(o).total,0);
+  return `<div class="grid kpis">${QSTEPS.map(s=>`<div class="card kpi"><div class="l">${qPill(s)}</div><div class="v">${L.filter(o=>o.quote.status===s).length}</div><div class="small muted">${tk(sum(s))}</div></div>`).join('')}</div>
+  <div class="card" style="margin-top:14px;padding:0"><div class="tablewrap"><table>
+    <thead><tr><th>Quote</th><th>Customer</th><th>Business</th><th class="r">Total</th><th>Status</th><th>Sent</th><th></th></tr></thead>
+    <tbody>${L.map(o=>`<tr class="click" onclick="go('order',{id:'${o.id}',tab:'quote'})"><td><b>Q-${o.id.slice(3)}</b></td><td>${esc(o.name)}<div class="small muted">${esc(o.company)}</div></td><td class="small">${o.biz}</td>
+      <td class="r"><b>${tk(qTotals(o).total)}</b></td><td>${qPill(o.quote.status)}</td><td class="small muted">${o.quote.sent?fmt(o.quote.sent):'—'}</td>
+      <td>${o.quote.status==='Viewed'?'<span class="pill p-amber">Follow up</span>':o.quote.status==='Draft'?'<span class="pill p-grey">Not sent</span>':''}</td></tr>`).join('')}</tbody></table></div></div>`;
+}
+
+/* ---------------- DESIGNS LIST ---------------- */
+function viewDesigns(){
+  const L=list().filter(o=>o.design.versions.length);
+  const order={'Waiting':0,'Change requested':1,'None':2,'Approved':3};
+  L.sort((a,b)=>order[a.design.status]-order[b.design.status]);
+  return `<p class="muted" style="margin-top:0">Latest mockup of every order. Waiting ones first.</p>
+  <div class="mockups">${L.map(o=>{const v=o.design.versions[o.design.versions.length-1];return `<div class="mock" style="cursor:pointer" onclick="go('order',{id:'${o.id}',tab:'design'})">
+    <div class="img">${mockImg(v)}</div><div class="b"><div style="display:flex;justify-content:space-between;gap:6px;align-items:center"><b>${esc(o.name)}</b>${dPill(o.design.status)}</div>
+    <div class="small muted" style="margin-top:4px">v${v.v} · ${esc(o.product)} · ${o.qty} pcs</div></div></div>`}).join('')}</div>`;
+}
+
+/* ---------------- PAYMENTS LEDGER ---------------- */
+function viewPayments(){
+  const L=list(), all=[]; L.forEach(o=>o.payments.forEach(p=>all.push({...p,o})));
+  all.sort((a,b)=>b.d.localeCompare(a.d));
+  const byM={}; all.forEach(p=>byM[p.m]=(byM[p.m]||0)+p.a);
+  const due = L.filter(o=>!o.production).map(o=>({o, need:Math.max(0,qTotals(o).adv-paid(o))})).filter(x=>x.need>1 && o_ok(x.o));
+  function o_ok(o){ return o.quote.status!=='Draft'; }
+  return `<div class="grid kpis">
+    <div class="card kpi"><div class="l">Collected</div><div class="v" style="color:var(--green)">${tk(all.reduce((a,p)=>a+p.a,0))}</div><div class="small muted">${all.length} payments</div></div>
+    ${['bKash','Nagad','Bank transfer'].map(m=>`<div class="card kpi"><div class="l">${m}</div><div class="v">${tk(byM[m]||0)}</div><div class="small muted">&nbsp;</div></div>`).join('')}
+  </div>
+  <div class="two" style="margin-top:14px">
+    <div class="card" style="padding:0"><div style="padding:16px 16px 4px"><h3 style="margin:0">All payments</h3></div><div class="tablewrap"><table>
+      <thead><tr><th>Date</th><th>Customer</th><th>Method</th><th>Trx ID</th><th class="r">Amount</th></tr></thead>
+      <tbody>${all.map(p=>`<tr class="click" onclick="go('order',{id:'${p.o.id}',tab:'pay'})"><td>${fmt(p.d)}</td><td>${esc(p.o.name)}<div class="small muted">${p.o.id}</div></td><td>${p.m}</td><td class="small muted">${esc(p.trx)}</td><td class="r"><b>${tk(p.a)}</b></td></tr>`).join('')||'<tr><td colspan="5" class="muted">No payments</td></tr>'}</tbody></table></div></div>
+    <div class="card"><h3><span class="ms" style="color:var(--red)">pending_actions</span>Advance to collect</h3>
+      ${due.map(x=>`<div class="who" style="padding:9px 0;border-bottom:1px solid var(--line);cursor:pointer" onclick="go('order',{id:'${x.o.id}',tab:'pay'})"><span class="av">${initials(x.o.name)}</span><div style="flex:1"><b>${esc(x.o.name)}</b><small>Quotation ${x.o.quote.status.toLowerCase()} · ${x.o.staff}</small></div><b style="color:var(--red)">${tk(x.need)}</b></div>`).join('')||'<p class="muted">Nothing due 🎉</p>'}
+    </div>
+  </div>`;
+}
+
+render();
+</script>
+</body>
+</html>
